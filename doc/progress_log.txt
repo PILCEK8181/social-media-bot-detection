@@ -1,0 +1,9 @@
+xxxxxxxxxx --- acusition of twibot22 and twibot20 access from the authors
+
+xxxxxxxxxx --- Creation of github reposeitory for project src
+
+xxxxxxxxxx --- data set tested and created feature based prototype 
+
+xxxxxxxxxx --- meta center registration
+
+2026-02-15 --- Twscrape python library tested with burner X account and failed
