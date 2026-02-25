@@ -5,6 +5,11 @@ data/
 *.json
 *.csv
 
+models/
+
+
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
+
+SLOP/
