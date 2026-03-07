@@ -1,0 +1,128 @@
+from playwright.sync_api import sync_playwright
+import pandas as pd
+import json
+
+# CONFIG
+AUTH_TOKEN = "XXX"
+CT0_TOKEN = "XXX"
+
+TARGET_ACCOUNTS = ["elonmusk"]
+
+captured_tweets = []
+captured_profiles = []
+CURRENT_TARGET = "" 
+
+# tweets
+def extract_tweets_recursive(obj):
+    if isinstance(obj, dict):
+        if 'full_text' in obj and 'created_at' in obj:
+            captured_tweets.append({
+                "Date": obj.get("created_at"),
+                "Text": obj.get("full_text"),
+                "Likes": obj.get("favorite_count"),
+                "Retweets": obj.get("retweet_count"),
+                "Replies": obj.get("reply_count")
+            })
+        for key, value in obj.items():
+            extract_tweets_recursive(value)
+    elif isinstance(obj, list):
+        for item in obj:
+            extract_tweets_recursive(item)
+
+# account metadata
+def extract_profile_recursive(obj):
+    if isinstance(obj, dict):
+        # If it has followers_count and a description, it's the profile data.
+        if 'followers_count' in obj and 'description' in obj:
+            captured_profiles.append({
+                "Username": obj.get("screen_name", CURRENT_TARGET), # Fallback to our target name
+                "Display Name": obj.get("name", "Unknown"),
+                "Bio": obj.get("description", ""),
+                "Followers": obj.get("followers_count", 0),
+                "Following": obj.get("friends_count", 0),
+                "Location": obj.get("location", "Not provided"),
+                "Verified": obj.get("is_blue_verified", obj.get("verified", False))
+            })
+        for key, value in obj.items():
+            extract_profile_recursive(value)
+    elif isinstance(obj, list):
+        for item in obj:
+            extract_profile_recursive(item)
+
+def handle_response(response):
+    url = response.url
+    if "graphql" in url and response.request.method == "GET":
+        try:
+            # 1.Profile Data
+            if "UserByScreenName" in url or "UserByRestId" in url:
+                print("Profile data intercepted getting metadata...")
+                data = response.json()
+                extract_profile_recursive(data)
+                
+            # 2.Timeline Data
+            elif "UserTweets" in url:
+                print(f"Intercepted timeline data, getting tweets...")
+                data = response.json()
+                extract_tweets_recursive(data)
+
+        except Exception as e:
+            pass 
+
+def run_scraper():
+    global CURRENT_TARGET
+    
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=False)
+        context = browser.new_context(
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            viewport={"width": 1280, "height": 720}
+        )
+        
+        context.add_cookies([
+            {"name": "auth_token", "value": AUTH_TOKEN, "domain": ".x.com", "path": "/"},
+            {"name": "ct0", "value": CT0_TOKEN, "domain": ".x.com", "path": "/"},
+            {"name": "auth_token", "value": AUTH_TOKEN, "domain": ".twitter.com", "path": "/"},
+            {"name": "ct0", "value": CT0_TOKEN, "domain": ".twitter.com", "path": "/"}
+        ])
+
+        page = context.new_page()
+        page.on("response", handle_response)
+
+        for account in TARGET_ACCOUNTS:
+            CURRENT_TARGET = account
+            print(f"\nNavigating to @{account}...")
+            captured_tweets.clear()
+            captured_profiles.clear()
+            
+            page.goto(f"https://x.com/{account}")
+            page.wait_for_timeout(4000) 
+            
+            page.mouse.wheel(0, 3000)
+            print("Waiting for network data to parse...")
+            page.wait_for_timeout(5000) 
+            
+            # --- SAVE TWEETS ---
+            if captured_tweets:
+                df_tweets = pd.DataFrame(captured_tweets)
+                df_tweets['Author'] = account 
+                tweets_filename = f"../temp/tweets_{account}.csv"
+                df_tweets.to_csv(tweets_filename, index=False, encoding='utf-8')
+                print(f"SUCCESS! Saved {len(df_tweets)} tweets to {tweets_filename}.")
+            else:
+                print(f"No tweets found for {account}.")
+
+            # --- SAVE PROFILES ---
+            if captured_profiles:
+                #first match to avoid duplicates
+                df_profile = pd.DataFrame([captured_profiles[0]])
+                profile_filename = f"../temp/profile_{account}.csv"
+                df_profile.to_csv(profile_filename, index=False, encoding='utf-8')
+                print(f"SUCCESS! Saved profile metadata to {profile_filename}.")
+            else:
+                print(f"No profile metadata found for {account}.")
+
+        print("\nClosing browser.")
+        browser.close()
+
+if __name__ == "__main__":
+    run_scraper()
