@@ -7,7 +7,7 @@ AUTH_TOKEN = "XXX"
 CT0_TOKEN = "XXX"
 
 # todo - one is enough?
-TARGET_ACCOUNTS = ["Ahoj1"] # location test
+TARGET_ACCOUNTS = ["Charles_leclerc", "testaccoun55761"] # location test
 
 captured_tweets = []
 current_profile_data = {} 
@@ -24,9 +24,10 @@ def reset_profile_data():
         "Following": 0,
         "Location": "Not provided",
         "Verified": False,
-        "Profile Image URL": "", 
+        "Default pfp": False, 
         "Total Tweets": 0,       
-        "Listed Count": 0        
+        "Listed Count": 0,
+        "Creation Date": "Unknown" #    
     }
 
 # tweets 
@@ -54,12 +55,19 @@ def extract_profile_aggregate(obj):
         if obj.get('screen_name', '').lower() == CURRENT_TARGET.lower():
             current_profile_data['Display Name'] = obj.get('name', current_profile_data['Display Name'])
             
+            #creation date
+            if 'created_at' in obj:
+                current_profile_data['Creation Date'] = obj.get('created_at')
+
+
+
+
         # 2. Scavenge the Location 
         if 'location' in obj and obj.get('location'):
             if current_profile_data['Location'] == "Not provided":
                 current_profile_data['Location'] = obj.get('location')
                 
-        # 3. Scavenge the Metrics and bio
+        # 3. Scavenge the Metrics and bio and 
         if 'followers_count' in obj and current_profile_data['Followers'] == 0:
             current_profile_data['Followers'] = obj.get('followers_count')
             current_profile_data['Following'] = obj.get('friends_count', 0)
@@ -71,10 +79,7 @@ def extract_profile_aggregate(obj):
         elif 'verified' in obj and current_profile_data['Verified'] is False:
             current_profile_data['Verified'] = obj.get('verified')
 
-        # 5. Scavenge Image, Tweets, and Listed Count
-        if 'profile_image_url_https' in obj and current_profile_data['Profile Image URL'] == "":
-            current_profile_data['Profile Image URL'] = obj.get('profile_image_url_https')
-            
+        # 5. Scavenge Tweets, and Listed Count         
         if 'statuses_count' in obj and current_profile_data['Total Tweets'] == 0:
             current_profile_data['Total Tweets'] = obj.get('statuses_count')
             
