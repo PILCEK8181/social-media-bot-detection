@@ -7,7 +7,7 @@ AUTH_TOKEN = "XXX"
 CT0_TOKEN = "XXX"
 
 # todo - one is enough?
-TARGET_ACCOUNTS = ["Charles_leclerc", "testaccoun55761"] # location test
+TARGET_ACCOUNTS = ["Charles_leclerc", "testaccoun55761", "prezidentpavel"] # location test
 
 captured_tweets = []
 current_profile_data = {} 
@@ -55,10 +55,11 @@ def extract_profile_aggregate(obj):
         if obj.get('screen_name', '').lower() == CURRENT_TARGET.lower():
             current_profile_data['Display Name'] = obj.get('name', current_profile_data['Display Name'])
             
+            print(f"\nDEBUG - Keys inside {CURRENT_TARGET}'s folder: {list(obj.keys())}\n")
+
             #creation date
             if 'created_at' in obj:
                 current_profile_data['Creation Date'] = obj.get('created_at')
-
 
 
 
@@ -72,6 +73,18 @@ def extract_profile_aggregate(obj):
             current_profile_data['Followers'] = obj.get('followers_count')
             current_profile_data['Following'] = obj.get('friends_count', 0)
             current_profile_data['Bio'] = obj.get('description') or current_profile_data['Bio']
+
+            print(f"\nDEBUG - Keys inside {CURRENT_TARGET}'s folder: {list(obj.keys())}\n")
+
+            # First, check X's built-in boolean
+            if 'default_profile_image' in obj:
+                current_profile_data['Default pfp'] = obj.get('default_profile_image')
+            
+            # Second, check the URL as a failsafe (in case the boolean lies)
+            if 'profile_image_url_https' in obj:
+                img_url = obj.get('profile_image_url_https', '')
+                if 'default_profile' in img_url:
+                    current_profile_data['Default pfp'] = True
             
         # 4. Scavenge Verification Status // check both 'is_blue_verified' and 'verified' to cover different API versions
         if 'is_blue_verified' in obj and current_profile_data['Verified'] is False:
