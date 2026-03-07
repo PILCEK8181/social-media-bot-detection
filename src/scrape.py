@@ -3,16 +3,30 @@ import pandas as pd
 import json
 
 # CONFIG
-AUTH_TOKEN = "XXX"
-CT0_TOKEN = "XXX"
+AUTH_TOKEN = "d96a295cea4ec0f0afd07b550d9d1064988f2eb6"
+CT0_TOKEN = "6240dd8ac9879a1ae1eb7f146dc3bd241067cb895606d764ac585728d4c0eb95bb2ae156e17bea422fd96d8c96b50a7e02467e6623220d26ac1ea9e0aa1d71370532eae73b2ea198ecbad76025f973a7"
 
-TARGET_ACCOUNTS = ["elonmusk"]
+# todo - one is enough?
+TARGET_ACCOUNTS = ["nytimes"] # location test
 
 captured_tweets = []
-captured_profiles = []
+current_profile_data = {} 
 CURRENT_TARGET = "" 
 
-# tweets
+# template
+def reset_profile_data():
+    global current_profile_data
+    current_profile_data = {
+        "Username": CURRENT_TARGET,
+        "Display Name": "Unknown",
+        "Bio": "",
+        "Followers": 0,
+        "Following": 0,
+        "Location": "Not provided",
+        "Verified": False
+    }
+
+# tweets 
 def extract_tweets_recursive(obj):
     if isinstance(obj, dict):
         if 'full_text' in obj and 'created_at' in obj:
@@ -29,37 +43,49 @@ def extract_tweets_recursive(obj):
         for item in obj:
             extract_tweets_recursive(item)
 
-# account metadata
-def extract_profile_recursive(obj):
+# profile data
+def extract_profile_aggregate(obj):
+    global current_profile_data
     if isinstance(obj, dict):
-        # If it has followers_count and a description, it's the profile data.
-        if 'followers_count' in obj and 'description' in obj:
-            captured_profiles.append({
-                "Username": obj.get("screen_name", CURRENT_TARGET), # Fallback to our target name
-                "Display Name": obj.get("name", "Unknown"),
-                "Bio": obj.get("description", ""),
-                "Followers": obj.get("followers_count", 0),
-                "Following": obj.get("friends_count", 0),
-                "Location": obj.get("location", "Not provided"),
-                "Verified": obj.get("is_blue_verified", obj.get("verified", False))
-            })
+        # 1. Scavenge the Name
+        if obj.get('screen_name', '').lower() == CURRENT_TARGET.lower():
+            current_profile_data['Display Name'] = obj.get('name', current_profile_data['Display Name'])
+            
+        # 2. Scavenge the Location 
+        if 'location' in obj and obj.get('location'):
+            if current_profile_data['Location'] == "Not provided":
+                current_profile_data['Location'] = obj.get('location')
+                
+        # 3. Scavenge the Metrics and bio
+        if 'followers_count' in obj and current_profile_data['Followers'] == 0:
+            current_profile_data['Followers'] = obj.get('followers_count')
+            current_profile_data['Following'] = obj.get('friends_count', 0)
+            current_profile_data['Bio'] = obj.get('description') or current_profile_data['Bio']
+            
+        # 4. Scavenge Verification Status // check both 'is_blue_verified' and 'verified' to cover different API versions
+        if 'is_blue_verified' in obj and current_profile_data['Verified'] is False:
+            current_profile_data['Verified'] = obj.get('is_blue_verified')
+        elif 'verified' in obj and current_profile_data['Verified'] is False:
+            current_profile_data['Verified'] = obj.get('verified')
+
         for key, value in obj.items():
-            extract_profile_recursive(value)
+            extract_profile_aggregate(value)
+            
     elif isinstance(obj, list):
         for item in obj:
-            extract_profile_recursive(item)
+            extract_profile_aggregate(item)
 
 def handle_response(response):
     url = response.url
     if "graphql" in url and response.request.method == "GET":
         try:
-            # 1.Profile Data
+            # 1. Profile Data
             if "UserByScreenName" in url or "UserByRestId" in url:
-                print("Profile data intercepted getting metadata...")
+                print("Profile data intercepted, scavenging metadata...")
                 data = response.json()
-                extract_profile_recursive(data)
+                extract_profile_aggregate(data) 
                 
-            # 2.Timeline Data
+            # 2. Timeline Data
             elif "UserTweets" in url:
                 print(f"Intercepted timeline data, getting tweets...")
                 data = response.json()
@@ -72,6 +98,7 @@ def run_scraper():
     global CURRENT_TARGET
     
     with sync_playwright() as p:
+        # debug: headless=False to see the browser in action, can switch to True for production
         browser = p.chromium.launch(headless=False)
         context = browser.new_context(
             user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -92,7 +119,7 @@ def run_scraper():
             CURRENT_TARGET = account
             print(f"\nNavigating to @{account}...")
             captured_tweets.clear()
-            captured_profiles.clear()
+            reset_profile_data() # reset template for new account
             
             page.goto(f"https://x.com/{account}")
             page.wait_for_timeout(4000) 
@@ -101,7 +128,7 @@ def run_scraper():
             print("Waiting for network data to parse...")
             page.wait_for_timeout(5000) 
             
-            # --- SAVE TWEETS ---
+            # save tweets
             if captured_tweets:
                 df_tweets = pd.DataFrame(captured_tweets)
                 df_tweets['Author'] = account 
@@ -111,10 +138,10 @@ def run_scraper():
             else:
                 print(f"No tweets found for {account}.")
 
-            # --- SAVE PROFILES ---
-            if captured_profiles:
-                #first match to avoid duplicates
-                df_profile = pd.DataFrame([captured_profiles[0]])
+            # save profile data
+            # check
+            if current_profile_data['Followers'] > 0:
+                df_profile = pd.DataFrame([current_profile_data])
                 profile_filename = f"../temp/profile_{account}.csv"
                 df_profile.to_csv(profile_filename, index=False, encoding='utf-8')
                 print(f"SUCCESS! Saved profile metadata to {profile_filename}.")
