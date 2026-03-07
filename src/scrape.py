@@ -7,7 +7,7 @@ AUTH_TOKEN = "XXX"
 CT0_TOKEN = "XXX"
 
 # todo - one is enough?
-TARGET_ACCOUNTS = ["prezidentpavel"] # location test
+TARGET_ACCOUNTS = ["Ahoj1"] # location test
 
 captured_tweets = []
 current_profile_data = {} 
@@ -153,7 +153,7 @@ def run_scraper():
 
             # save profile data
             # check
-            if current_profile_data['Followers'] > 0:
+            if current_profile_data['Display Name'] != "Unknown":
                 df_profile = pd.DataFrame([current_profile_data])
                 profile_filename = f"../temp/profile_{account}.csv"
                 df_profile.to_csv(profile_filename, index=False, encoding='utf-8')
