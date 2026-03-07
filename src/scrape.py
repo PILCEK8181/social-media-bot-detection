@@ -7,7 +7,7 @@ AUTH_TOKEN = "XXX"
 CT0_TOKEN = "XXX"
 
 # todo - one is enough?
-TARGET_ACCOUNTS = ["nytimes"] # location test
+TARGET_ACCOUNTS = ["prezidentpavel"] # location test
 
 captured_tweets = []
 current_profile_data = {} 
@@ -23,7 +23,10 @@ def reset_profile_data():
         "Followers": 0,
         "Following": 0,
         "Location": "Not provided",
-        "Verified": False
+        "Verified": False,
+        "Profile Image URL": "", 
+        "Total Tweets": 0,       
+        "Listed Count": 0        
     }
 
 # tweets 
@@ -67,6 +70,16 @@ def extract_profile_aggregate(obj):
             current_profile_data['Verified'] = obj.get('is_blue_verified')
         elif 'verified' in obj and current_profile_data['Verified'] is False:
             current_profile_data['Verified'] = obj.get('verified')
+
+        # 5. Scavenge Image, Tweets, and Listed Count
+        if 'profile_image_url_https' in obj and current_profile_data['Profile Image URL'] == "":
+            current_profile_data['Profile Image URL'] = obj.get('profile_image_url_https')
+            
+        if 'statuses_count' in obj and current_profile_data['Total Tweets'] == 0:
+            current_profile_data['Total Tweets'] = obj.get('statuses_count')
+            
+        if 'listed_count' in obj and current_profile_data['Listed Count'] == 0:
+            current_profile_data['Listed Count'] = obj.get('listed_count')
 
         for key, value in obj.items():
             extract_profile_aggregate(value)

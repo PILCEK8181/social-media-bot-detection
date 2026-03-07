@@ -54,8 +54,9 @@ Example:
 
 ## Current metadata output CSV format
 
-Username,Display Name,Bio,Followers,Following,Location,Verified
-nytimes,The New York Times,News tips? Share them here: https://t.co/ghL9OoYKMM,53018618,842,{'location': 'New York City'},True
+Username,Display Name,Bio,Followers,Following,Location,Verified,Profile Image URL,Total Tweets,Listed Count
+nytimes,The New York Times,News tips? Share them here: https://t.co/ghL9OoYKMM,53018736,842,{'location': 'New York City'},True,,563220,206982
+
 
 ## TODO
 
