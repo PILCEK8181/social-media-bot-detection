@@ -340,5 +340,34 @@ def main():
     print("\n" + "=" * 70)
 
 
+    # PROBABILITIES FOR ENSEMBLE
+    print("\nExtracting Probabilities for Ensemble...")
+    # get ids for val and test
+    val_indices = np.where(np.array(splits) == 'val')[0]
+    test_indices = np.where(np.array(splits) == 'test')[0]
+    val_uids = [user_ids[i] for i in val_indices]
+    test_uids = [user_ids[i] for i in test_indices]
+    
+    def extract_probs(loader):
+        model.eval()
+        probs = []
+        with torch.no_grad():
+            for emb, _ in loader:
+                logits = model(emb.to(DEVICE))
+                # softmax for positive class (bot)
+                p = torch.softmax(logits, dim=1)[:, 1].cpu().numpy()
+                probs.extend(p)
+        return probs
+
+    val_probs = extract_probs(val_loader)
+    test_probs = extract_probs(test_loader)
+    
+    df_val = pd.DataFrame({'user_id': val_uids, 'prob_roberta': val_probs, 'split': 'val', 'label': [labels[i].item() for i in val_indices]})
+    df_test = pd.DataFrame({'user_id': test_uids, 'prob_roberta': test_probs, 'split': 'test', 'label': [labels[i].item() for i in test_indices]})
+    
+    pd.concat([df_val, df_test]).to_csv(os.path.join(TEMP_DIR, 'preds_roberta_weighted.csv'), index=False)
+    print(" RoBERTa probabilities saved to preds_roberta_weighted.csv")
+
+
 if __name__ == '__main__':
     main()
