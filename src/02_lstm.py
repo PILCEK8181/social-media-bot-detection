@@ -142,7 +142,7 @@ def load_and_prepare_iat_data():
     pos_weight = torch.tensor([num_humans / (num_bots + 1e-5)]).to(DEVICE)
     print(f" Calculated pos_weight for BCE: {pos_weight.item():.4f}")
     
-    return train_loader, val_loader, test_loader, pos_weight
+    return train_loader, val_loader, test_loader, pos_weight, all_user_ids, val_mask, test_mask, y
 
 
 class IAT_LSTM_Model(nn.Module):
@@ -237,7 +237,7 @@ def main():
     Path(MODELS_DIR).mkdir(parents=True, exist_ok=True)
     
     # 1. load data and weights
-    train_loader, val_loader, test_loader, pos_weight = load_and_prepare_iat_data()
+    train_loader, val_loader, test_loader, pos_weight, all_user_ids, val_mask, test_mask, y_labels = load_and_prepare_iat_data()
     
     # 2. model init
     model = IAT_LSTM_Model(hidden_size=64, num_layers=2).to(DEVICE)
@@ -286,7 +286,34 @@ def main():
     
     model_path = os.path.join(MODELS_DIR, '02_lstm_iat_model.pth')
     torch.save(model.state_dict(), model_path)
-    print(f"\n✓ Model saved to {model_path}")
+    print(f"\n Model saved to {model_path}")
+
+
+
+    # probabilities for ensemble
+    print("\nExtracting Probabilities for Ensemble...")
+    val_uids = np.array(all_user_ids)[val_mask]
+    test_uids = np.array(all_user_ids)[test_mask]
+    
+    def extract_probs_lstm(loader):
+        model.eval()
+        probs = []
+        with torch.no_grad():
+            for X_batch, _ in loader:
+                logits = model(X_batch.to(DEVICE))
+                # Sigmoid -> 0-1 bots probs
+                p = torch.sigmoid(logits).cpu().numpy()
+                probs.extend(p)
+        return probs
+
+    val_probs = extract_probs_lstm(val_loader)
+    test_probs = extract_probs_lstm(test_loader)
+    
+    df_val = pd.DataFrame({'user_id': val_uids, 'prob_lstm': val_probs, 'split': 'val', 'label': y_labels[val_mask]})
+    df_test = pd.DataFrame({'user_id': test_uids, 'prob_lstm': test_probs, 'split': 'test', 'label': y_labels[test_mask]})
+    
+    pd.concat([df_val, df_test]).to_csv(os.path.join(TEMP_DIR, 'preds_lstm.csv'), index=False)
+    print(" LSTM probabilities saved to preds_lstm.csv")
 
 if __name__ == '__main__':
     main()

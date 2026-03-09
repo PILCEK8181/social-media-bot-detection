@@ -14,6 +14,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 #TODO todays date?
+#TODO refactor
 # Account age reference point
 REFERENCE_DATE = pd.Timestamp('2022-12-31').tz_localize('UTC')
 # Paths
@@ -293,3 +294,15 @@ plt.tight_layout()
 plt.savefig('./results/TEST01_rf_model_evaluation.png', dpi=300, bbox_inches='tight')
 print("Plots saved to ../results/TEST01_rf_model_evaluation.png")
 plt.show()
+
+
+# Extract user IDs for validation and test sets
+val_uids = df[df['split'] == 'val']['id'].values
+test_uids = df[df['split'] == 'test']['id'].values
+
+val_probs = rf_model.predict_proba(X_valid)[:, 1] # bot prob
+test_probs = rf_model.predict_proba(X_test)[:, 1]
+
+df_val = pd.DataFrame({'user_id': val_uids, 'prob_rf': val_probs, 'split': 'val', 'label': y_valid.values})
+df_test = pd.DataFrame({'user_id': test_uids, 'prob_rf': test_probs, 'split': 'test', 'label': y_test.values})
+pd.concat([df_val, df_test]).to_csv('./temp/preds_rf.csv', index=False)
