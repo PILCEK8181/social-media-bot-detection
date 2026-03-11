@@ -2,7 +2,7 @@ import os
 import csv
 from datetime import datetime
 
-def save_metrics(filename: str, seed: int, acc: float, prec: float, recall: float, f1: float, mcc: float, output_csv: str = "./results/results.csv"):
+def save_metrics(filename: str, seed: int, acc: float, prec: float, recall: float, f1: float, mcc: float, note: str = "", output_csv: str = "./results/results.csv"):
     """
     Saves model evaluation metrics to a CSV file. 
     """
@@ -23,7 +23,8 @@ def save_metrics(filename: str, seed: int, acc: float, prec: float, recall: floa
                 "precision", 
                 "recall", 
                 "f1_score", 
-                "mcc"
+                "mcc",
+                "note"
             ])
         
         # Write the actual metrics, formatting floats to 4 decimal places
@@ -35,7 +36,8 @@ def save_metrics(filename: str, seed: int, acc: float, prec: float, recall: floa
             f"{prec:.4f}",
             f"{recall:.4f}",
             f"{f1:.4f}",
-            f"{mcc:.4f}"
+            f"{mcc:.4f}",
+            note
         ])
         
     print(f"\n Results successfully appended to {output_csv}")
