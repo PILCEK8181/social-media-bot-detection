@@ -12,6 +12,8 @@ import re
 import joblib
 import warnings
 warnings.filterwarnings('ignore')
+from utils.save_metrics import save_metrics
+import random
 
 #TODO todays date?
 #TODO refactor
@@ -21,6 +23,7 @@ REFERENCE_DATE = pd.Timestamp('2022-12-31').tz_localize('UTC')
 USER_FILE = './data/twibot22/user.json'
 LABEL_FILE = './data/twibot22/label.csv'
 SPLIT_FILE = './data/twibot22/split.csv'
+SEED = random.randint(1, 10000)
 
 def load_data():
     print("Loading labels...")
@@ -182,7 +185,7 @@ print(f"Train: {len(X_train)}, Valid: {len(X_valid)}, Test: {len(X_test)}")
 print("\nTraining RandomForest...")
 rf_model = RandomForestClassifier(n_estimators=200, max_depth=20, min_samples_split=5,
                                   min_samples_leaf=2, class_weight='balanced', 
-                                  random_state=42, n_jobs=-1)
+                                  random_state=SEED, n_jobs=-1)
 rf_model.fit(X_train, y_train)
 
 def evaluate(X, y, name):
@@ -306,3 +309,14 @@ test_probs = rf_model.predict_proba(X_test)[:, 1]
 df_val = pd.DataFrame({'user_id': val_uids, 'prob_rf': val_probs, 'split': 'val', 'label': y_valid.values})
 df_test = pd.DataFrame({'user_id': test_uids, 'prob_rf': test_probs, 'split': 'test', 'label': y_test.values})
 pd.concat([df_val, df_test]).to_csv('./temp/preds_rf.csv', index=False)
+
+save_metrics(
+        filename="01_rf.py",
+        seed=SEED,
+        acc=test_metrics['Accuracy'],
+        prec=test_metrics['Precision'],
+        recall=test_metrics['Recall'],
+        f1=test_metrics['F1'],
+        mcc=test_metrics['MCC'],
+        note="Random Forest // feature"
+    )
