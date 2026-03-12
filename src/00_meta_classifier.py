@@ -6,11 +6,13 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, matthews_corrcoef, confusion_matrix, classification_report
+from utils.save_metrics import save_metrics
+import random
 
 TEMP_DIR = './temp'
 MODELS_DIR = './models'
 RESULTS_DIR = './results'
-SEED = 16
+SEED = random.randint(1, 10000)
 
 def main():
     print("=" * 70)
@@ -30,8 +32,8 @@ def main():
 
     #---- 03 Roberta ----
     #df_rob = pd.read_csv(os.path.join(TEMP_DIR, 'preds_roberta_weighted.csv'))
-    #df_rob = pd.read_csv(os.path.join(TEMP_DIR, 'preds_roberta.csv'))
-    df_rob = pd.read_csv(os.path.join(TEMP_DIR, 'preds_roberta_oversample.csv'))
+    df_rob = pd.read_csv(os.path.join(TEMP_DIR, 'preds_roberta.csv'))
+    #df_rob = pd.read_csv(os.path.join(TEMP_DIR, 'preds_roberta_oversample.csv'))
 
     
     # conver user_id to str and remove 'u' prefix to ensure proper merging
@@ -47,7 +49,7 @@ def main():
     df_val = df[df['split'] == 'val']
     df_test = df[df['split'] == 'test']
     
-    # FINAL FEATURES going into Meta-Classifier
+    # FINAL FEATURES going into Meta-Classifier // chance to add more ?? TODO
     features = ['prob_roberta', 'prob_rf']
     
     X_val = df_val[features]
@@ -93,7 +95,7 @@ def main():
 
 
     # save model for live mode usage
-    model_path = os.path.join(MODELS_DIR, '00XDmeta_classifier_lr.pkl')
+    model_path = os.path.join(MODELS_DIR, 'meta_classifier_lr.pkl')
     joblib.dump(meta_model, model_path)
     print(f"\nMeta-Model saved successfully to {model_path}")
 
@@ -107,9 +109,20 @@ def main():
     plt.xlabel('Expert models')
     
   
-    plot_path = os.path.join(RESULTS_DIR, '00_XDmodel_weights.png')
+    plot_path = os.path.join(RESULTS_DIR, '00model_weights.png')
     plt.savefig(plot_path)
     print(f"Visualization saved to {plot_path}")
+
+    save_metrics(
+        filename="00_meta_classifier.py",
+        seed=SEED,
+        acc=accuracy_score(y_test, preds),
+        prec=precision_score(y_test, preds),
+        recall=recall_score(y_test, preds),
+        f1=f1_score(y_test, preds),
+        mcc=matthews_corrcoef(y_test, preds),
+        note="Meta-Classifier Stacking // text,feature - ignore class weights"
+    )
 
 if __name__ == "__main__":
     main()
