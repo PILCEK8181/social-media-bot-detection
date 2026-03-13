@@ -20,7 +20,7 @@ TEMP_DIR = './temp'
 MODELS_DIR = './models'
 BATCH_SIZE = 128
 EPOCHS = 50
-LEARNING_RATE = 1e-4
+LEARNING_RATE = 1e-4 #todo
 
 SEED = random.randint(0, 10000)
 random.seed(SEED)
@@ -363,8 +363,8 @@ def main():
     df_val = pd.DataFrame({'user_id': val_uids, 'prob_roberta': val_probs, 'split': 'val', 'label': [labels[i].item() for i in val_indices]})
     df_test = pd.DataFrame({'user_id': test_uids, 'prob_roberta': test_probs, 'split': 'test', 'label': [labels[i].item() for i in test_indices]})
     
-    pd.concat([df_val, df_test]).to_csv(os.path.join(TEMP_DIR, 'preds_roberta.csv'), index=False)
-    print(" RoBERTa probabilities saved to preds_roberta.csv")
+    pd.concat([df_val, df_test]).to_csv(os.path.join(TEMP_DIR, 'predictions/preds_roberta.csv'), index=False)
+    print(" RoBERTa probabilities saved to predictions/preds_roberta.csv")
 
     current_script_name = os.path.basename(__file__) 
     acc = test_acc
@@ -381,7 +381,7 @@ def main():
         recall=recall,
         f1=f1,
         mcc=mcc,
-        note="ZLATÝ BASELINE - saved"
+        note="ZLATÝ BASELINE - 1e-4"
     )
 
 

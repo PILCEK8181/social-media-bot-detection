@@ -168,10 +168,10 @@ X_test = df[df['split'] == 'test'][feature_cols_final].copy()
 y_test = df[df['split'] == 'test']['label']
 
 # Z-score
-scaler = StandardScaler()
-X_train = scaler.fit_transform(X_train)
-X_valid = scaler.transform(X_valid)
-X_test = scaler.transform(X_test)
+# scaler = StandardScaler()
+# X_train = scaler.fit_transform(X_train)
+# X_valid = scaler.transform(X_valid)
+# X_test = scaler.transform(X_test)
 
 X_train = pd.DataFrame(X_train, columns=feature_cols_final)
 X_valid = pd.DataFrame(X_valid, columns=feature_cols_final)
@@ -213,7 +213,8 @@ test_metrics, y_test_pred, y_test_proba = evaluate(X_test, y_test, "TEST")
 
 # save model
 joblib.dump(rf_model, './models/01_rf.joblib')
-print("\nModel saved")
+# joblib.dump(scaler, './models/01_rf_scaler.joblib') 
+print("\nModel and Scaler saved")
 
 
 ######################################## --- EVALUATION & PLOTTING--- ########################################
@@ -294,8 +295,8 @@ ax5.set_ylabel('Bot Probability')
 ax5.grid(True, alpha=0.3, axis='y')
 
 plt.tight_layout()
-plt.savefig('./results/TEST01_rf_model_evaluation.png', dpi=300, bbox_inches='tight')
-print("Plots saved to ../results/TEST01_rf_model_evaluation.png")
+plt.savefig('./results/01_rf_model_evaluation.png', dpi=300, bbox_inches='tight')
+print("Plots saved to ../results/01_rf_model_evaluation.png")
 plt.show()
 
 
@@ -308,7 +309,7 @@ test_probs = rf_model.predict_proba(X_test)[:, 1]
 
 df_val = pd.DataFrame({'user_id': val_uids, 'prob_rf': val_probs, 'split': 'val', 'label': y_valid.values})
 df_test = pd.DataFrame({'user_id': test_uids, 'prob_rf': test_probs, 'split': 'test', 'label': y_test.values})
-pd.concat([df_val, df_test]).to_csv('./temp/preds_rf.csv', index=False)
+pd.concat([df_val, df_test]).to_csv('./temp/predictions/preds_rf.csv', index=False)
 
 save_metrics(
         filename="01_rf.py",
@@ -318,5 +319,5 @@ save_metrics(
         recall=test_metrics['Recall'],
         f1=test_metrics['F1'],
         mcc=test_metrics['MCC'],
-        note="Random Forest // feature"
+        note="Random Forest // 'cooked'"
     )

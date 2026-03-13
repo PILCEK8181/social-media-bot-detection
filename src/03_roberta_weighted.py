@@ -365,8 +365,8 @@ def main():
     df_val = pd.DataFrame({'user_id': val_uids, 'prob_roberta': val_probs, 'split': 'val', 'label': [labels[i].item() for i in val_indices]})
     df_test = pd.DataFrame({'user_id': test_uids, 'prob_roberta': test_probs, 'split': 'test', 'label': [labels[i].item() for i in test_indices]})
     
-    pd.concat([df_val, df_test]).to_csv(os.path.join(TEMP_DIR, 'preds_roberta_weighted.csv'), index=False)
-    print(" RoBERTa probabilities saved to preds_roberta_weighted.csv")
+    pd.concat([df_val, df_test]).to_csv(os.path.join(TEMP_DIR, 'predictions/preds_roberta_weighted.csv'), index=False)
+    print(" RoBERTa probabilities saved to predictions/preds_roberta_weighted.csv")
 
 
 if __name__ == '__main__':

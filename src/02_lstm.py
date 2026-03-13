@@ -312,8 +312,8 @@ def main():
     df_val = pd.DataFrame({'user_id': val_uids, 'prob_lstm': val_probs, 'split': 'val', 'label': y_labels[val_mask]})
     df_test = pd.DataFrame({'user_id': test_uids, 'prob_lstm': test_probs, 'split': 'test', 'label': y_labels[test_mask]})
     
-    pd.concat([df_val, df_test]).to_csv(os.path.join(TEMP_DIR, 'preds_lstm.csv'), index=False)
-    print(" LSTM probabilities saved to preds_lstm.csv")
+    pd.concat([df_val, df_test]).to_csv(os.path.join(TEMP_DIR, 'predictions/preds_lstm.csv'), index=False)
+    print(" LSTM probabilities saved to predictions/preds_lstm.csv")
 
 if __name__ == '__main__':
     main()
