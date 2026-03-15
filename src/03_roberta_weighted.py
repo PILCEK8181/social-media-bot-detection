@@ -11,6 +11,8 @@ from sklearn.metrics import f1_score, accuracy_score, classification_report, con
 from pathlib import Path
 from tqdm import tqdm
 from datetime import datetime
+from utils.save_metrics import save_metrics
+import random
 
 from torch.utils.data import WeightedRandomSampler
 
@@ -20,6 +22,15 @@ MODELS_DIR = './models'
 BATCH_SIZE = 128
 EPOCHS = 50
 LEARNING_RATE = 1e-4
+
+SEED = random.randint(1, 10000)  # Generate a random seed for reproducibility
+random.seed(SEED)
+np.random.seed(SEED)
+torch.manual_seed(SEED)
+if torch.cuda.is_available():
+    torch.cuda.manual_seed_all(SEED)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
 
 print(f"Device: {DEVICE}")
 print(f"Loading embeddings from: {TEMP_DIR}")
@@ -144,32 +155,32 @@ class BotDetectionModel(nn.Module):
     def __init__(self, input_dim: int):
         super(BotDetectionModel, self).__init__()
         self.fc1 = nn.Linear(input_dim, 512)
-        self.bn1 = nn.BatchNorm1d(512)
+        # self.bn1 = nn.BatchNorm1d(512)
         self.dropout1 = nn.Dropout(0.5)
         
         self.fc2 = nn.Linear(512, 256)
-        self.bn2 = nn.BatchNorm1d(256)
+        # self.bn2 = nn.BatchNorm1d(256)
         self.dropout2 = nn.Dropout(0.3)
         
         self.fc3 = nn.Linear(256, 128)
-        self.bn3 = nn.BatchNorm1d(128)
+        # self.bn3 = nn.BatchNorm1d(128)
         self.dropout3 = nn.Dropout(0.2)
         
         self.output = nn.Linear(128, 2)
     
     def forward(self, x):
         x = self.fc1(x)
-        x = self.bn1(x)
+        # x = self.bn1(x)
         x = torch.relu(x)
         x = self.dropout1(x)
         
         x = self.fc2(x)
-        x = self.bn2(x)
+        # x = self.bn2(x)
         x = torch.relu(x)
         x = self.dropout2(x)
         
         x = self.fc3(x)
-        x = self.bn3(x)
+        # x = self.bn3(x)
         x = torch.relu(x)
         x = self.dropout3(x)
         
@@ -258,7 +269,8 @@ def train_model(model, train_loader, val_loader, device, epochs=EPOCHS, lr=LEARN
         if val_f1 > best_f1:
             best_f1 = val_f1
             best_epoch = epoch 
-            best_model_state = model.state_dict().copy()
+            # best_model_state = model.state_dict().copy()
+            best_model_state = {k: v.cpu() for k, v in model.state_dict().items()}
         
         if (epoch + 1) % 2 == 0:
             print(f"  Epoch {epoch+1}/{epochs} - Train Loss: {train_loss:.4f}, Val Loss: {val_loss:.4f}, Val F1: {val_f1:.4f}")
@@ -368,6 +380,23 @@ def main():
     pd.concat([df_val, df_test]).to_csv(os.path.join(TEMP_DIR, 'predictions/preds_roberta_weighted.csv'), index=False)
     print(" RoBERTa probabilities saved to predictions/preds_roberta_weighted.csv")
 
+    current_script_name = os.path.basename(__file__) 
+    acc = test_acc
+    prec = precision_score(test_labels, test_preds)
+    recall = recall_score(test_labels, test_preds)
+    f1 = test_f1
+    mcc = matthews_corrcoef(test_labels, test_preds)
+
+    save_metrics(
+        filename=current_script_name,
+        seed=SEED, 
+        acc=acc,
+        prec=prec,
+        recall=recall,
+        f1=f1,
+        mcc=mcc,
+        note="WEIGHTED - 1e-4"
+    )
 
 if __name__ == '__main__':
     main()
