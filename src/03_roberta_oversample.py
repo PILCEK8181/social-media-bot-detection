@@ -181,11 +181,11 @@ class BotDetectionModel(nn.Module):
         super(BotDetectionModel, self).__init__()
         self.fc1 = nn.Linear(input_dim, 512)
         # self.bn1 = nn.BatchNorm1d(512)
-        self.dropout1 = nn.Dropout(0.5)
+        self.dropout1 = nn.Dropout(0.3)
         
         self.fc2 = nn.Linear(512, 256)
         # self.bn2 = nn.BatchNorm1d(256)
-        self.dropout2 = nn.Dropout(0.3)
+        self.dropout2 = nn.Dropout(0.2)
         
         self.fc3 = nn.Linear(256, 128)
         # self.bn3 = nn.BatchNorm1d(128)
@@ -322,7 +322,7 @@ def main():
     model = BotDetectionModel(input_dim).to(DEVICE)
     print(f"\nModel architecture:")
     print(f"  Input dim: {input_dim} (768 tweet + 768 bio)")
-    print(f"  Layers: 768 → 512 → 256 → 128 → 2")
+    print(f"  Layers: {input_dim} → 512 → 256 → 128 → 2")
     
     model = train_model(model, train_loader, val_loader, DEVICE)
     
@@ -407,7 +407,7 @@ def main():
         recall=recall,
         f1=f1,
         mcc=mcc,
-        note="OVERSAMPLE - 1e-4"
+        note="RoBERTa Oversample"
     )
 
 

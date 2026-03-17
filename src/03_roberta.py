@@ -22,7 +22,7 @@ BATCH_SIZE = 128
 EPOCHS = 50
 LEARNING_RATE = 1e-4 #todo
 
-SEED = random.randint(0, 10000)
+SEED = random.randint(1, 10000)  # Generate a random seed for reproducibility
 random.seed(SEED)
 np.random.seed(SEED)
 torch.manual_seed(SEED)
@@ -271,7 +271,7 @@ def train_model(model, train_loader, val_loader, device, epochs=EPOCHS, lr=LEARN
 
 def main():
     print("\n" + "=" * 70)
-    print("Bot Detection Model Training - Tweets + Bio RoBERTa Embeddings - Weighted Loss")
+    print("Bot Detection Model Training - Tweets + Bio RoBERTa Embeddings")
     print("=" * 70)
     print(f"Timestamp: {datetime.now().isoformat()}")
     
@@ -296,7 +296,7 @@ def main():
     model = BotDetectionModel(input_dim).to(DEVICE)
     print(f"\nModel architecture:")
     print(f"  Input dim: {input_dim} (768 tweet + 768 bio)")
-    print(f"  Layers: 768 → 512 → 256 → 128 → 2")
+    print(f"  Layers: {input_dim} → 512 → 256 → 128 → 2")
     
     model = train_model(model, train_loader, val_loader, DEVICE)
     
@@ -381,7 +381,7 @@ def main():
         recall=recall,
         f1=f1,
         mcc=mcc,
-        note="ZLATÝ BASELINE - 1e-4"
+        note="RoBERTa Base"
     )
 
 

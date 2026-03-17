@@ -310,7 +310,7 @@ def main():
     model = BotDetectionModel(input_dim).to(DEVICE)
     print(f"\nModel architecture:")
     print(f"  Input dim: {input_dim} (768 tweet + 768 bio)")
-    print(f"  Layers: 768 → 512 → 256 → 128 → 2")
+    print(f"  Layers: {input_dim} → 512 → 256 → 128 → 2")
     
     model = train_model(model, train_loader, val_loader, DEVICE)
     
@@ -395,7 +395,7 @@ def main():
         recall=recall,
         f1=f1,
         mcc=mcc,
-        note="WEIGHTED - 1e-4"
+        note="RoBERTa Weighted"
     )
 
 if __name__ == '__main__':
