@@ -176,3 +176,9 @@ Jupyter notebooks in `notebooks/` directory provide detailed exploration and ana
 See LICENSE file for project licensing details.
 **Thesis Project**: Social Media Bot Detection using Machine Learning
 
+# TODO
+
+reprocducticton
+fix dataset
+scraper
+    # confidence interval / excel fit / histogram / EER
