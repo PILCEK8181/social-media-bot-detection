@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, matthews_corrcoef, confusion_matrix, classification_report
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, matthews_corrcoef, confusion_matrix
 from utils.save_metrics import save_metrics
 import random
 
@@ -15,28 +15,27 @@ RESULTS_DIR = './results'
 SEED = random.randint(1, 10000)
 
 def main():
+    
     print("=" * 70)
     print("Final Meta-Classifier (Logistic Regression Stacking)")
     print("=" * 70)
-    
     print("Seed:", SEED)
-
     print("Loading prediction files...")
 
     
     # --- 01 RF ----
-    df_rf = pd.read_csv(os.path.join(TEMP_DIR, 'preds_rf.csv'))
+    df_rf = pd.read_csv(os.path.join(TEMP_DIR, 'predictions/preds_rf.csv'))
     
     # --- 02 LSTM ----
-    df_lstm = pd.read_csv(os.path.join(TEMP_DIR, 'preds_lstm.csv'))
+    df_lstm = pd.read_csv(os.path.join(TEMP_DIR, 'predictions/preds_lstm.csv'))
 
     #---- 03 Roberta ----
-    #df_rob = pd.read_csv(os.path.join(TEMP_DIR, 'preds_roberta_weighted.csv'))
-    df_rob = pd.read_csv(os.path.join(TEMP_DIR, 'preds_roberta.csv'))
-    #df_rob = pd.read_csv(os.path.join(TEMP_DIR, 'preds_roberta_oversample.csv'))
+    # df_rob = pd.read_csv(os.path.join(TEMP_DIR, 'predictions/preds_roberta_weighted.csv'))
+    # df_rob = pd.read_csv(os.path.join(TEMP_DIR, 'predictions/preds_roberta.csv'))
+    df_rob = pd.read_csv(os.path.join(TEMP_DIR, 'predictions/preds_roberta_oversample.csv'))
 
     
-    # conver user_id to str and remove 'u' prefix to ensure proper merging
+    # convert user_id to str and remove 'u' prefix to ensure proper merging
     df_rob['user_id'] = df_rob['user_id'].astype(str).str.replace('u', '', regex=False)
     df_rf['user_id'] = df_rf['user_id'].astype(str).str.replace('u', '', regex=False)
     df_lstm['user_id'] = df_lstm['user_id'].astype(str).str.replace('u', '', regex=False)
@@ -49,8 +48,10 @@ def main():
     df_val = df[df['split'] == 'val']
     df_test = df[df['split'] == 'test']
     
-    # FINAL FEATURES going into Meta-Classifier // chance to add more ?? TODO
-    features = ['prob_roberta', 'prob_rf']
+    # FINAL FEATURES going into Meta-Classifier
+    # use only RF and Roberta probabilities as features for the meta-classifier, since LSTM performed poorly and may add noise
+    # its possible to change those features or include LSTM
+    features = ['prob_rf', 'prob_roberta']
     
     X_val = df_val[features]
     y_val = df_val['label']
@@ -61,14 +62,14 @@ def main():
     print(f"  Training Meta-Classifier on {len(X_val)} validation samples...")
     print(f"  Evaluating on {len(X_test)} test samples...")
     
-    # Train Logistic Regression as Meta-Classifier, using balanced class weights to handle any imbalance in the validation set
-    meta_model = LogisticRegression(class_weight='balanced', random_state=SEED)
+    # Train Logistic Regression as Meta-Classifier
+    meta_model = LogisticRegression(class_weight=None, random_state=SEED)
     meta_model.fit(X_val, y_val)
     
     # Final predictions on the test set
     preds = meta_model.predict(X_test)
     
-    #EVAL
+    # Final evaluation
     print("\n" + "=" * 70)
     print("FINAL ENSEMBLE RESULTS (Test Set)")
     print("=" * 70)
@@ -108,7 +109,6 @@ def main():
     plt.ylabel('weight')
     plt.xlabel('Expert models')
     
-  
     plot_path = os.path.join(RESULTS_DIR, '00model_weights.png')
     plt.savefig(plot_path)
     print(f"Visualization saved to {plot_path}")
@@ -121,7 +121,7 @@ def main():
         recall=recall_score(y_test, preds),
         f1=f1_score(y_test, preds),
         mcc=matthews_corrcoef(y_test, preds),
-        note="Meta-Classifier Stacking // text,feature - ignore class weights"
+        note="final - top 15 features, NONE class weights, oversampled roberta"
     )
 
 if __name__ == "__main__":
