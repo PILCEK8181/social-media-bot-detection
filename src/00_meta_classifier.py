@@ -9,6 +9,10 @@ from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_sc
 from utils.save_metrics import save_metrics
 import random
 
+import joblib
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 TEMP_DIR = './temp'
 MODELS_DIR = './models'
 RESULTS_DIR = './results'
@@ -89,12 +93,6 @@ def main():
     for name, weight in zip(features, weights):
         print(f"  {name:15}: {weight:.4f}")
     
-
-    import joblib
-    import matplotlib.pyplot as plt
-    import seaborn as sns
-
-
     # save model for live mode usage
     model_path = os.path.join(MODELS_DIR, 'meta_classifier_lr.pkl')
     joblib.dump(meta_model, model_path)

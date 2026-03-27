@@ -40,17 +40,15 @@ print("=" * 70)
 
 
 def load_labels():
-    """Load bot/human labels from CSV."""
     print("Loading labels...")
     df_labels = pd.read_csv(LABEL_FILE)
     label_map = dict(zip(df_labels['id'].astype(str), 
-                        (df_labels['label'] == 'bot').astype(int)))
+                         (df_labels['label'] == 'bot').astype(int)))
     print(f"  Loaded {len(label_map)} labels")
     return label_map
 
 
 def load_splits():
-    """Load data splits (train/val/test) from CSV."""
     print("Loading splits...")
     df_split = pd.read_csv(SPLIT_FILE)
     split_map = dict(zip(df_split['id'].astype(str), df_split['split']))
@@ -59,7 +57,6 @@ def load_splits():
 
 
 def load_raw_users():
-    """Load raw user JSON data."""
     print("Loading user data...")
     with open(USER_FILE, 'r', encoding='utf-8') as f:
         raw_data = json.load(f)
@@ -68,7 +65,7 @@ def load_raw_users():
 
 
 def extract_user_features(entry):
-    """Extract features from a single user entry."""
+
     metrics = entry.get('public_metrics', {})
     
     # Account age
@@ -152,9 +149,8 @@ def extract_user_features(entry):
     }
     return features
 
-
+# Process data
 def load_data():
-    """Load and process user data with labels and splits."""
     label_map = load_labels()
     split_map = load_splits()
     raw_data = load_raw_users()
@@ -181,7 +177,6 @@ def load_data():
 
 
 def prepare_features(df):
-    """Engineer and prepare features."""
     print("\nPreparing features...")
     
     # Feature engineering: raw counts (log), ratios, text metrics, flags
@@ -191,19 +186,29 @@ def prepare_features(df):
     
     log_features = [f'log_{col}' for col in raw_counts]
     ratios = ['follower_following_ratio', 'tweets_per_day', 'followers_per_tweet', 'listed_followers_ratio']
+    
     text_metrics = ['username_length', 'name_length', 'description_length', 'name_digit_count', 
                     'name_special_char_count', 'username_digit_count', 'username_special_char_count']
+    
     flags = ['has_mention', 'has_hashtag', 'has_url_in_description', 'has_location', 'has_url_field',
              'verified', 'protected', 'default_profile_image', 'account_age_days']
     
-    feature_cols_final = log_features + ratios + text_metrics + flags
+    top15 = ['log_followers_count', 'log_tweet_count', 'follower_following_ratio', 'description_length', 
+             'log_listed_count', 'tweets_per_day', 'log_following_count', 'account_age_days', 'listed_followers_ratio', 
+             'log_following_count', 'followers_per_tweet', 'name_length', 'verified', 'has_url_field', 'name_special_char_count']
+    
+    top10 = ['log_followers_count', 'log_tweet_count', 'follower_following_ratio', 'description_length', 'log_listed_count', 
+             'tweets_per_day', 'log_following_count', 'account_age_days', 'listed_followers_ratio', 'followers_per_tweet']
+
+    # Final selected features for the model (can be changed to top10, all, or custom)
+    feature_cols_final = top15
+    
     print(f"  Total features: {len(feature_cols_final)}")
     
     return df, feature_cols_final
 
 
 def split_data(df, feature_cols_final):
-    """Split data into train/val/test."""
     print("\nSplitting data...")
     
     X_train = df[df['split'] == 'train'][feature_cols_final].copy()
@@ -215,12 +220,6 @@ def split_data(df, feature_cols_final):
     X_test = df[df['split'] == 'test'][feature_cols_final].copy()
     y_test = df[df['split'] == 'test']['label']
 
-    # Z-score
-    # scaler = StandardScaler()
-    # X_train = scaler.fit_transform(X_train)
-    # X_valid = scaler.transform(X_valid)
-    # X_test = scaler.transform(X_test)
-    
     X_train = pd.DataFrame(X_train, columns=feature_cols_final)
     X_valid = pd.DataFrame(X_valid, columns=feature_cols_final)
     X_test = pd.DataFrame(X_test, columns=feature_cols_final)
@@ -231,7 +230,6 @@ def split_data(df, feature_cols_final):
 
 
 def train_model(X_train, y_train):
-    """Train Random Forest model."""
     print("\nTraining Random Forest...")
     
     rf_model = RandomForestClassifier(n_estimators=200, max_depth=20, min_samples_split=5,
@@ -243,7 +241,6 @@ def train_model(X_train, y_train):
 
 
 def evaluate(model, X, y, name):
-    """Evaluate model on data."""
     y_pred = model.predict(X)
     y_proba = model.predict_proba(X)[:, 1]
     
@@ -263,7 +260,6 @@ def evaluate(model, X, y, name):
 
 
 def save_model(model, path):
-    """Save trained model."""
     import joblib
     joblib.dump(model, path)
     print(f"Model saved to: {path}")
@@ -271,12 +267,12 @@ def save_model(model, path):
 
 def plot_results(test_metrics, valid_metrics, train_metrics, feature_cols_final, 
                  rf_model, y_test, y_test_pred, y_test_proba):
-    """Generate evaluation plots."""
     print("\nGenerating plots...")
     
     # Feature importance ranking
     importances = rf_model.feature_importances_
     indices = np.argsort(importances)[::-1]
+    
     print("Top 15 Most Important Features:")
     for i in range(min(15, len(indices))):
         idx = indices[i]
@@ -344,15 +340,14 @@ def plot_results(test_metrics, valid_metrics, train_metrics, feature_cols_final,
     ax5.set_ylabel('Bot Probability')
     ax5.grid(True, alpha=0.3, axis='y')
     
-    Path(RESULTS_DIR).mkdir(parents=True, exist_ok=True)
     plt.tight_layout()
-    plt.savefig(os.path.join(RESULTS_DIR, '01_rf_model_evaluation.png'), dpi=300, bbox_inches='tight')
-    print(f"Plots saved to: {os.path.join(RESULTS_DIR, '01_rf_model_evaluation.png')}")
+    png_path = os.path.join(RESULTS_DIR, '01_rf_model_evaluation.png')
+    plt.savefig(png_path, dpi=300, bbox_inches='tight')
+    print(f"Combined evaluation plots saved to: {png_path}")
     plt.close()
 
-
+# Save predictions for meta-classifier
 def save_predictions(df, X_valid, y_valid, X_test, y_test, rf_model):
-    """Save predictions to CSV."""
     print("\nSaving predictions...")
     
     val_uids = df[df['split'] == 'val']['id'].values
@@ -410,7 +405,7 @@ def main():
         recall=test_metrics['Recall'],
         f1=test_metrics['F1'],
         mcc=test_metrics['MCC'],
-        note="refactored again"
+        note="balanced todo final BASE - top 15 features"
     )
     
     print("\n" + "=" * 70)
@@ -420,4 +415,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
