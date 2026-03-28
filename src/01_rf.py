@@ -195,7 +195,7 @@ def prepare_features(df):
     
     top15 = ['log_followers_count', 'log_tweet_count', 'follower_following_ratio', 'description_length', 
              'log_listed_count', 'tweets_per_day', 'log_following_count', 'account_age_days', 'listed_followers_ratio', 
-             'log_following_count', 'followers_per_tweet', 'name_length', 'verified', 'has_url_field', 'name_special_char_count']
+             'followers_per_tweet', 'name_length', 'verified', 'username_length', 'has_url_field', 'name_special_char_count']
     
     top10 = ['log_followers_count', 'log_tweet_count', 'follower_following_ratio', 'description_length', 'log_listed_count', 
              'tweets_per_day', 'log_following_count', 'account_age_days', 'listed_followers_ratio', 'followers_per_tweet']
@@ -405,7 +405,7 @@ def main():
         recall=test_metrics['Recall'],
         f1=test_metrics['F1'],
         mcc=test_metrics['MCC'],
-        note="balanced todo final BASE - top 15 features"
+        note="balanced final BASE - top 15 features"
     )
     
     print("\n" + "=" * 70)

@@ -104,7 +104,7 @@ def main():
     plt.xlabel('Expert models')
     
   
-    plot_path = os.path.join(RESULTS_DIR, '00model_rf_importances.png')
+    plot_path = os.path.join(RESULTS_DIR, '00model_rf_weights.png')
     plt.savefig(plot_path)
     print(f"Visualization saved to {plot_path}")
 
