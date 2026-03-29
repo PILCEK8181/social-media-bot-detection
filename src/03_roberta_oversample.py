@@ -181,11 +181,11 @@ class BotDetectionModel(nn.Module):
         super(BotDetectionModel, self).__init__()
         self.fc1 = nn.Linear(input_dim, 512)
         # self.bn1 = nn.BatchNorm1d(512)
-        self.dropout1 = nn.Dropout(0.3)
+        self.dropout1 = nn.Dropout(0.5)
         
         self.fc2 = nn.Linear(512, 256)
         # self.bn2 = nn.BatchNorm1d(256)
-        self.dropout2 = nn.Dropout(0.2)
+        self.dropout2 = nn.Dropout(0.3)
         
         self.fc3 = nn.Linear(256, 128)
         # self.bn3 = nn.BatchNorm1d(128)
