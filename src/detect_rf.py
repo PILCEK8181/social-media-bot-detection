@@ -48,39 +48,27 @@ Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
 
 def load_profile_data(username: str) -> Dict:
     
-    profile_path = os.path.join(DEMO_DIR, f'profile_{username}.csv')
+    profile_path = os.path.join(DEMO_DIR, f'profile_{username}.json')
     
     if not os.path.exists(profile_path):
         raise FileNotFoundError(f"Data file not found:\n  - {profile_path}")
     
-    # Load profile and handle NaNs securely
-    profile_df = pd.read_csv(profile_path)
-    profile_df = profile_df.fillna("") # Fill all NaNs with empty string
-    profile_row = profile_df.iloc[0]
+    with open(profile_path, 'r') as f:
+        profile = json.load(f)
+    
+    metrics = profile.get('public_metrics', {})
     
     profile_data = {
-        'username': str(profile_row['Username']).strip(),
-        'display_name': str(profile_row['Display Name']).strip(),
-        'bio': str(profile_row['Bio']).strip(),
-        'followers_count': int(profile_row['Followers']) if str(profile_row['Followers']).isdigit() else 0,
-        'following_count': int(profile_row['Following']) if str(profile_row['Following']).isdigit() else 0,
-        'tweet_count': int(profile_row['Total Tweets']) if str(profile_row['Total Tweets']).isdigit() else 0,
-        'listed_count': int(profile_row['Listed Count']) if str(profile_row['Listed Count']).isdigit() else 0,
-        'verified': str(profile_row['Verified']).lower() == 'true',
-        'default_profile_image': str(profile_row['Default pfp']).lower() == 'true',
-        'creation_date': pd.to_datetime(profile_row['Creation Date'], errors='coerce')
+        'username': str(profile.get('username', '')).strip(),
+        'display_name': str(profile.get('name', '')).strip(),
+        'bio': str(profile.get('description', '')).strip(),
+        'followers_count': int(metrics.get('followers_count', 0)),
+        'following_count': int(metrics.get('following_count', 0)),
+        'tweet_count': int(metrics.get('tweet_count', 0)),
+        'listed_count': int(metrics.get('listed_count', 0)),
+        'verified': bool(profile.get('verified', False)),
+        'creation_date': pd.to_datetime(profile.get('created_at'), errors='coerce'),
     }
-    
-    # Parse location securely
-    location = str(profile_row.get('Location', ''))
-    if location.startswith('{'):
-        try:
-            location_dict = eval(location)
-            profile_data['location'] = location_dict.get('location', '')
-        except:
-            profile_data['location'] = location
-    else:
-        profile_data['location'] = location
         
     return profile_data
 
@@ -120,7 +108,7 @@ def extract_rf_features(profile_data: Dict) -> Dict:
         'name_length': len(name),
         'verified': 1 if profile_data['verified'] else 0,
         'username_length': len(username),
-        'has_url_field': 1,
+        'has_url_field': 1 if 'http' in description.lower() else 0,
         'name_special_char_count': sum(1 for c in name if not c.isalnum() and not c.isspace()),
     }
     return features
