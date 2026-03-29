@@ -145,7 +145,7 @@ def run_scraper():
                 df_tweets = df_tweets.drop_duplicates(subset=['Text'])
                 df_tweets = df_tweets.head(20)
                 
-                tweets_filename = f"../temp/tweets_{account}.json"
+                tweets_filename = f"../demo/tweets_{account}.json"
                 # date_format='iso' keeps the JSON dates highly readable
                 df_tweets.to_json(tweets_filename, orient='records', indent=2, date_format='iso')
                 print(f"SUCCESS! Saved {len(df_tweets)} newest tweets to {tweets_filename}.")
@@ -163,7 +163,7 @@ def run_scraper():
                     except Exception:
                         pass
                 
-                profile_filename = f"../temp/profile_{account}.json"
+                profile_filename = f"../demo/profile_{account}.json"
                 with open(profile_filename, 'w', encoding='utf-8') as f:
                     json.dump(current_profile_data, f, ensure_ascii=False, indent=2)
                 print(f"SUCCESS! Saved profile data to {profile_filename}.")
