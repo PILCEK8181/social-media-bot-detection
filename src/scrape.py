@@ -2,32 +2,31 @@ from playwright.sync_api import sync_playwright
 import pandas as pd
 import json
 
-# CONFIG
+# CONFIG, set your own tokens here
 AUTH_TOKEN = "XXX"
 CT0_TOKEN = "XXX"
 
-# todo - one is enough?
-TARGET_ACCOUNTS = ["Charles_leclerc", "testaccoun55761", "prezidentpavel"] # location test
+TARGET_ACCOUNTS = ["Ahoj1", "Charles_leclerc", "elonmusk", "BarackObama", "JoeBiden", "BillGates", "ladygaga", "Cristiano", "rihanna", "KimKardashian"] 
 
 captured_tweets = []
 current_profile_data = {} 
 CURRENT_TARGET = "" 
 
-# template
+# template 
 def reset_profile_data():
     global current_profile_data
     current_profile_data = {
-        "Username": CURRENT_TARGET,
-        "Display Name": "Unknown",
-        "Bio": "",
-        "Followers": 0,
-        "Following": 0,
-        "Location": "Not provided",
-        "Verified": False,
-        "Default pfp": False, 
-        "Total Tweets": 0,       
-        "Listed Count": 0,
-        "Creation Date": "Unknown" #    
+        "created_at": "Unknown",
+        "description": "",
+        "name": "Unknown",
+        "public_metrics": {
+            "followers_count": 0,
+            "following_count": 0,
+            "tweet_count": 0,
+            "listed_count": 0
+        },
+        "username": CURRENT_TARGET,
+        "verified": False,
     }
 
 # tweets 
@@ -51,54 +50,26 @@ def extract_tweets_recursive(obj):
 def extract_profile_aggregate(obj):
     global current_profile_data
     if isinstance(obj, dict):
-        # 1. Scavenge the Name
+        # Extract fields scoped to the target user
         if obj.get('screen_name', '').lower() == CURRENT_TARGET.lower():
-            current_profile_data['Display Name'] = obj.get('name', current_profile_data['Display Name'])
+            current_profile_data['name'] = obj.get('name', current_profile_data['name'])
+            current_profile_data['created_at'] = obj.get('created_at', current_profile_data['created_at'])
+
+        # Extract metrics and description
+        if 'followers_count' in obj and current_profile_data['public_metrics']['followers_count'] == 0:
+            current_profile_data['public_metrics']['followers_count'] = obj.get('followers_count', 0)
+            current_profile_data['public_metrics']['following_count'] = obj.get('friends_count', 0)
+            current_profile_data['public_metrics']['tweet_count'] = obj.get('statuses_count', 0)
+            current_profile_data['public_metrics']['listed_count'] = obj.get('listed_count', 0)
+            current_profile_data['description'] = obj.get('description') or current_profile_data['description']
             
-            print(f"\nDEBUG - Keys inside {CURRENT_TARGET}'s folder: {list(obj.keys())}\n")
+        # Extract verification status
+        if 'is_blue_verified' in obj and current_profile_data['verified'] is False:
+            current_profile_data['verified'] = obj.get('is_blue_verified')
+        elif 'verified' in obj and current_profile_data['verified'] is False:
+            current_profile_data['verified'] = obj.get('verified')
 
-            #creation date
-            if 'created_at' in obj:
-                current_profile_data['Creation Date'] = obj.get('created_at')
-
-
-
-        # 2. Scavenge the Location 
-        if 'location' in obj and obj.get('location'):
-            if current_profile_data['Location'] == "Not provided":
-                current_profile_data['Location'] = obj.get('location')
-                
-        # 3. Scavenge the Metrics and bio and 
-        if 'followers_count' in obj and current_profile_data['Followers'] == 0:
-            current_profile_data['Followers'] = obj.get('followers_count')
-            current_profile_data['Following'] = obj.get('friends_count', 0)
-            current_profile_data['Bio'] = obj.get('description') or current_profile_data['Bio']
-
-            print(f"\nDEBUG - Keys inside {CURRENT_TARGET}'s folder: {list(obj.keys())}\n")
-
-            # First, check X's built-in boolean
-            if 'default_profile_image' in obj:
-                current_profile_data['Default pfp'] = obj.get('default_profile_image')
-            
-            # Second, check the URL as a failsafe (in case the boolean lies)
-            if 'profile_image_url_https' in obj:
-                img_url = obj.get('profile_image_url_https', '')
-                if 'default_profile' in img_url:
-                    current_profile_data['Default pfp'] = True
-            
-        # 4. Scavenge Verification Status // check both 'is_blue_verified' and 'verified' to cover different API versions
-        if 'is_blue_verified' in obj and current_profile_data['Verified'] is False:
-            current_profile_data['Verified'] = obj.get('is_blue_verified')
-        elif 'verified' in obj and current_profile_data['Verified'] is False:
-            current_profile_data['Verified'] = obj.get('verified')
-
-        # 5. Scavenge Tweets, and Listed Count         
-        if 'statuses_count' in obj and current_profile_data['Total Tweets'] == 0:
-            current_profile_data['Total Tweets'] = obj.get('statuses_count')
-            
-        if 'listed_count' in obj and current_profile_data['Listed Count'] == 0:
-            current_profile_data['Listed Count'] = obj.get('listed_count')
-
+        # Dig deeper
         for key, value in obj.items():
             extract_profile_aggregate(value)
             
@@ -110,18 +81,15 @@ def handle_response(response):
     url = response.url
     if "graphql" in url and response.request.method == "GET":
         try:
-            # 1. Profile Data
             if "UserByScreenName" in url or "UserByRestId" in url:
                 print("Profile data intercepted, scavenging metadata...")
                 data = response.json()
                 extract_profile_aggregate(data) 
                 
-            # 2. Timeline Data
             elif "UserTweets" in url:
                 print(f"Intercepted timeline data, getting tweets...")
                 data = response.json()
                 extract_tweets_recursive(data)
-
         except Exception as e:
             pass 
 
@@ -129,7 +97,6 @@ def run_scraper():
     global CURRENT_TARGET
     
     with sync_playwright() as p:
-        # debug: headless=False to see the browser in action, can switch to True for production
         browser = p.chromium.launch(headless=False)
         context = browser.new_context(
             user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -150,34 +117,58 @@ def run_scraper():
             CURRENT_TARGET = account
             print(f"\nNavigating to @{account}...")
             captured_tweets.clear()
-            reset_profile_data() # reset template for new account
+            reset_profile_data() 
             
             page.goto(f"https://x.com/{account}")
             page.wait_for_timeout(4000) 
+            
+            # Hydration bypass
+            print("Bypassing HTML cache to force Page 1 download...")
+            try:
+                page.locator(f"a[href='/{account}/with_replies']").first.click()
+                page.wait_for_timeout(2000)
+                page.locator(f"a[href='/{account}']").filter(has_text="Posts").first.click()
+                page.wait_for_timeout(3000)
+            except Exception as e:
+                print("Tab toggle failed, relying on scroll...")
             
             page.mouse.wheel(0, 3000)
             print("Waiting for network data to parse...")
             page.wait_for_timeout(5000) 
             
-            # save tweets
+            # --- SAVE TWEETS ---
             if captured_tweets:
                 df_tweets = pd.DataFrame(captured_tweets)
                 df_tweets['Author'] = account 
-                tweets_filename = f"../temp/tweets_{account}.csv"
-                df_tweets.to_csv(tweets_filename, index=False, encoding='utf-8')
-                print(f"SUCCESS! Saved {len(df_tweets)} tweets to {tweets_filename}.")
+                df_tweets['Date'] = pd.to_datetime(df_tweets['Date'], format='%a %b %d %H:%M:%S %z %Y')
+                df_tweets = df_tweets.sort_values(by='Date', ascending=False)
+                df_tweets = df_tweets.drop_duplicates(subset=['Text'])
+                df_tweets = df_tweets.head(20)
+                
+                tweets_filename = f"../temp/tweets_{account}.json"
+                # date_format='iso' keeps the JSON dates highly readable
+                df_tweets.to_json(tweets_filename, orient='records', indent=2, date_format='iso')
+                print(f"SUCCESS! Saved {len(df_tweets)} newest tweets to {tweets_filename}.")
             else:
                 print(f"No tweets found for {account}.")
-
-            # save profile data
-            # check
-            if current_profile_data['Display Name'] != "Unknown":
-                df_profile = pd.DataFrame([current_profile_data])
-                profile_filename = f"../temp/profile_{account}.csv"
-                df_profile.to_csv(profile_filename, index=False, encoding='utf-8')
-                print(f"SUCCESS! Saved profile metadata to {profile_filename}.")
+            
+            # --- FORMAT PROFILE DATES & SAVE ---
+            if current_profile_data['public_metrics']['followers_count'] >= 0:
+                
+                # Convert the created_at string right before saving
+                if current_profile_data['created_at'] != 'Unknown':
+                    try:
+                        dt = pd.to_datetime(current_profile_data['created_at'], format='%a %b %d %H:%M:%S %z %Y')
+                        current_profile_data['created_at'] = dt.strftime('%Y-%m-%d %H:%M:%S+00:00')
+                    except Exception:
+                        pass
+                
+                profile_filename = f"../temp/profile_{account}.json"
+                with open(profile_filename, 'w', encoding='utf-8') as f:
+                    json.dump(current_profile_data, f, ensure_ascii=False, indent=2)
+                print(f"SUCCESS! Saved profile data to {profile_filename}.")
             else:
-                print(f"No profile metadata found for {account}.")
+                print(f"No profile metadata found for {account} (Network might be slow).")
 
         print("\nClosing browser.")
         browser.close()
