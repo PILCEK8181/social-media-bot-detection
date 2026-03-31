@@ -5,13 +5,19 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, matthews_corrcoef, confusion_matrix
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, matthews_corrcoef, confusion_matrix, roc_curve
 from utils.save_metrics import save_metrics
 import random
 
 import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
+
+from utils.evaluation import (
+    calculate_confidence_intervals,
+    perform_mcnemar_test,
+    calculate_and_plot_eer,
+)
 
 TEMP_DIR = './temp'
 MODELS_DIR = './models'
@@ -121,6 +127,27 @@ def main():
         mcc=matthews_corrcoef(y_test, preds),
         note="final - top 15 features, NONE class weights, oversampled roberta"
     )
+
+    print("\n" + "=" * 70)
+    print("STARTING THESIS EVALUATION SUITE")
+    print("=" * 70)
+    
+    probs_ensemble = meta_model.predict_proba(X_test)[:, 1]
+    preds_rf_binary = (np.array(X_test['prob_rf']) >= 0.5).astype(int)
+    hist_path = os.path.join(RESULTS_DIR, '01_prob_histogram.png')
+    
+    # 1. Bootstrapping
+    calculate_confidence_intervals(y_test, preds)
+    
+    # 2. McNemar's Test
+    perform_mcnemar_test(y_test, preds, preds_rf_binary)
+    
+    # 3. EER & Histogram
+    calculate_and_plot_eer(y_test, probs_ensemble, save_path=hist_path)
+    
+    # 4. Robustness TODO
+    
+    print("=" * 70 + "\n")
 
 if __name__ == "__main__":
     main()
