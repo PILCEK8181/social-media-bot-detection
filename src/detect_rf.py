@@ -3,10 +3,11 @@ Offline Bot Detection - Random Forest ONLY
 Uses strictly profile metadata (15 features).
 
 USAGE:
-    python bot_detector_rf_only.py <username>
+    python detect_rf.py <username> [--mode demo|live]
 
 EXAMPLE:
-    python bot_detector_rf_only.py Charles_leclerc
+    python detect_rf.py Charles_leclerc              # uses pre-scraped demo data
+    python detect_rf.py Charles_leclerc --mode live   # scrapes fresh data first
 """
 
 import os
@@ -171,12 +172,19 @@ def save_results(results: Dict, username: str):
     print(f"JSON results saved to: {out_file}")
 
 def main():
-    parser = argparse.ArgumentParser(description='Offline Bot Detection - RF ONLY')
+    parser = argparse.ArgumentParser(description='Bot Detection - RF ONLY')
     parser.add_argument('username', help='Twitter username to analyze')
+    parser.add_argument('--mode', choices=['demo', 'live'], default='demo',
+                        help='demo = use existing data in ./demo, live = scrape fresh data first')
     args = parser.parse_args()
     
     try:
+        if args.mode == 'live':
+            from scrape import scrape_user
+            scrape_user(args.username, output_dir=DEMO_DIR)
+        
         results = detect_bot(args.username)
+        results['mode'] = args.mode
         save_results(results, args.username)
     except Exception as e:
         print(f"\nFatal error: {str(e)}")

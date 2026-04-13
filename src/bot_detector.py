@@ -4,10 +4,11 @@ Combines RF (metadata) and RoBERTa (text embeddings) models
 
 ===============================================================================
 USAGE:
-    python bot_detector.py <username>
+    python bot_detector.py <username> [--mode demo|live]
 
 EXAMPLE:
-    python bot_detector.py Charles_leclerc
+    python bot_detector.py Charles_leclerc              # uses pre-scraped demo data
+    python bot_detector.py Charles_leclerc --mode live   # scrapes fresh data first
 
 REQUIREMENTS:
     - Demo data files in ./demo/profile_<username>.json and ./tweets_<username>.json
@@ -348,12 +349,19 @@ def save_results(results: Dict, username: str):
 # ============================================================================
 
 def main():
-    parser = argparse.ArgumentParser(description='Offline Bot Detection using Ensemble Model')
+    parser = argparse.ArgumentParser(description='Bot Detection using Ensemble Model')
     parser.add_argument('username', help='Twitter username to analyze (without @)')
+    parser.add_argument('--mode', choices=['demo', 'live'], default='demo',
+                        help='demo = use existing data in ./demo, live = scrape fresh data first')
     args = parser.parse_args()
     
     try:
+        if args.mode == 'live':
+            from scrape import scrape_user
+            scrape_user(args.username, output_dir=DEMO_DIR)
+        
         results = detect_bot(args.username)
+        results['mode'] = args.mode
         save_results(results, args.username)
     except Exception as e:
         print(f"\nFatal error: {str(e)}")

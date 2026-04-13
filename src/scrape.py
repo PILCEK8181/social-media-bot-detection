@@ -1,10 +1,11 @@
 from playwright.sync_api import sync_playwright
 import pandas as pd
 import json
+import os
 
 # CONFIG, set your own tokens here
-AUTH_TOKEN = "XXX"
-CT0_TOKEN = "XXX"
+AUTH_TOKEN = "d96a295cea4ec0f0afd07b550d9d1064988f2eb6"
+CT0_TOKEN = "6240dd8ac9879a1ae1eb7f146dc3bd241067cb895606d764ac585728d4c0eb95bb2ae156e17bea422fd96d8c96b50a7e02467e6623220d26ac1ea9e0aa1d71370532eae73b2ea198ecbad76025f973a7"
 
 TARGET_ACCOUNTS = ["Ahoj1", "Charles_leclerc", "elonmusk", "BarackObama", "JoeBiden", "BillGates", "ladygaga", "Cristiano", "rihanna", "KimKardashian"] 
 
@@ -93,8 +94,11 @@ def handle_response(response):
         except Exception as e:
             pass 
 
-def run_scraper():
+#Scrape a list of accounts and save results to output_dir
+def _scrape_accounts(accounts, output_dir):
     global CURRENT_TARGET
+    
+    os.makedirs(output_dir, exist_ok=True)
     
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=False)
@@ -113,7 +117,7 @@ def run_scraper():
         page = context.new_page()
         page.on("response", handle_response)
 
-        for account in TARGET_ACCOUNTS:
+        for account in accounts:
             CURRENT_TARGET = account
             print(f"\nNavigating to @{account}...")
             captured_tweets.clear()
@@ -145,8 +149,7 @@ def run_scraper():
                 df_tweets = df_tweets.drop_duplicates(subset=['Text'])
                 df_tweets = df_tweets.head(20)
                 
-                tweets_filename = f"../demo/tweets_{account}.json"
-                # date_format='iso' keeps the JSON dates highly readable
+                tweets_filename = os.path.join(output_dir, f"tweets_{account}.json")
                 df_tweets.to_json(tweets_filename, orient='records', indent=2, date_format='iso')
                 print(f"SUCCESS! Saved {len(df_tweets)} newest tweets to {tweets_filename}.")
             else:
@@ -163,7 +166,7 @@ def run_scraper():
                     except Exception:
                         pass
                 
-                profile_filename = f"../demo/profile_{account}.json"
+                profile_filename = os.path.join(output_dir, f"profile_{account}.json")
                 with open(profile_filename, 'w', encoding='utf-8') as f:
                     json.dump(current_profile_data, f, ensure_ascii=False, indent=2)
                 print(f"SUCCESS! Saved profile data to {profile_filename}.")
@@ -172,6 +175,30 @@ def run_scraper():
 
         print("\nClosing browser.")
         browser.close()
+
+
+#Scrape a single user's profile and tweets. Called by detectors in live mode.
+def scrape_user(username, output_dir='./demo'):
+    print(f"\n[LIVE] Scraping data for @{username}...")
+    _scrape_accounts([username], output_dir)
+    
+    profile_path = os.path.join(output_dir, f"profile_{username}.json")
+    tweets_path = os.path.join(output_dir, f"tweets_{username}.json")
+    
+    if not os.path.exists(profile_path):
+        raise RuntimeError(f"Scraping failed: no profile data captured for @{username}")
+    if not os.path.exists(tweets_path):
+        # Create empty tweets file if user has no tweets
+        with open(tweets_path, 'w') as f:
+            json.dump([], f)
+        print(f"  Note: No tweets found, created empty tweets file.")
+    
+    print(f"[LIVE] Scraping complete for @{username}.")
+
+# batch scrape for all target accounts, saves to ../demo
+def run_scraper():
+    _scrape_accounts(TARGET_ACCOUNTS, '../demo')
+
 
 if __name__ == "__main__":
     run_scraper()
