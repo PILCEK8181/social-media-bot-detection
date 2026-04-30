@@ -1,7 +1,22 @@
 """
-LSTM Bot Detection - Inter-Arrival Times (IAT)
-Využívá data z processed_timestamps.csv a datum založení účtu z user.json.
+LSTM Bot Detection - Temporal Branch
+
+Author: xzacekp00 Patrik Žáček
+Institution: BUT FIT (Brno University of Technology, Faculty of Information Technology)
+Type: Bachelor's Thesis 2026
+Topic: Detection of Fake Accounts on Social Media Networks
+
+Description:
+    BiLSTM classifier trained on inter-arrival times (IAT) of user tweets to capture
+    temporal posting patterns. 
+
+Features:
+    - BiLSTM with 64 hidden units and 2 FC layers
+    - Sequence length: 200 tweets
+    - Class weights to handle imbalance
+    - Outputs predictions for ensemble meta-classifier
 """
+
 
 import os
 import json
@@ -73,7 +88,7 @@ def load_and_prepare_iat_data():
     print("  Loading tweet timestamps (this might take a minute)...")
     df_tweets = pd.read_csv(os.path.join(TEMP_DIR, 'processed_timestamps.csv'))
     df_tweets['user_id'] = df_tweets['user_id'].astype(str)
-    # Zrychlený převod času
+    # convert to datetime
     df_tweets['timestamp'] = pd.to_datetime(df_tweets['timestamp'], format='mixed', utc=True)
     
     # 4. group tweets by user

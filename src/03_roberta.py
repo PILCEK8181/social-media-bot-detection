@@ -1,5 +1,26 @@
 
 
+"""
+RoBERTa Bot Detection - Content Branch (Base Model)
+
+Author: xzacekp00 Patrik Žáček
+Institution: BUT FIT (Brno University of Technology, Faculty of Information Technology)
+Type: Bachelor's Thesis 2026
+Topic: Detection of Fake Accounts on Social Media Networks
+
+Description:
+    RoBERTa-based classifier trained on tweet and bio embeddings (768-dim each).
+    This is the base variant without class imbalance handling. Serves as the
+    content branch of the ensemble model.
+
+Features:
+    - Dense network: 1536 → 512 → 256 → 128 → 2
+    - Tweet + bio embedding concatenation
+    - Dropout regularization (0.5, 0.3, 0.2)
+    - Cross-entropy loss (unweighted)
+    - Outputs predictions for ensemble meta-classifier
+"""
+
 import os
 import torch
 import torch.nn as nn

@@ -1,4 +1,25 @@
 
+"""
+RoBERTa Bot Detection - Content Branch (Oversampling Variant - RECOMMENDED)
+
+Author: xzacekp00 Patrik Žáček
+Institution: BUT FIT (Brno University of Technology, Faculty of Information Technology)
+Type: Bachelor's Thesis 2026
+Topic: Detection of Fake Accounts on Social Media Networks
+
+Description:
+    RoBERTa-based classifier trained on tweet and bio embeddings with oversampling
+    of the minority class. This is the RECOMMENDED variant that achieves best performance
+    and serves as the content branch of the final ensemble.
+
+Features:
+    - Dense network: 1536 → 512 → 256 → 128 → 2
+    - Tweet + bio embedding concatenation
+    - Dropout regularization (0.5, 0.3, 0.2)
+    - Oversampling of minority class during training
+    - Cross-entropy loss (unweighted)
+    - Outputs predictions for ensemble meta-classifier
+"""
 
 import os
 import torch

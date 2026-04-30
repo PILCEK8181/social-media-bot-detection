@@ -1,4 +1,24 @@
 
+"""
+RoBERTa Bot Detection - Content Branch (Weighted Loss Variant)
+
+Author: xzacekp00 Patrik Žáček
+Institution: BUT FIT (Brno University of Technology, Faculty of Information Technology)
+Type: Bachelor's Thesis 2026
+Topic: Detection of Fake Accounts on Social Media Networks
+
+Description:
+    RoBERTa-based classifier trained on tweet and bio embeddings with balanced
+    class weights in the loss function. This variant handles class imbalance through
+    weighted cross-entropy. Alternative to oversampling approach.
+
+Features:
+    - Dense network: 1536 → 512 → 256 → 128 → 2
+    - Tweet + bio embedding concatenation
+    - Dropout regularization (0.5, 0.3, 0.2)
+    - Cross-entropy loss with balanced class weights
+    - Outputs predictions for ensemble meta-classifier
+"""
 
 import os
 import torch

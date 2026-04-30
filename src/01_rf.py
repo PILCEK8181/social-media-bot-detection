@@ -1,3 +1,22 @@
+"""
+Random Forest Bot Detection - Metadata Branch
+
+Author: xzacekp00 Patrik Žáček
+Institution: BUT FIT (Brno University of Technology, Faculty of Information Technology)
+Type: Bachelor's Thesis 2026
+Topic: Detection of Fake Accounts on Social Media Networks
+
+Description:
+    Random Forest classifier trained on user metadata features (account age, followers,
+    verification status, etc.). Serves as the metadata branch of the ensemble model.
+
+Features:
+    - 24 user profile features
+    - Balanced class weights to handle imbalance
+    - Feature importance analysis and ablation studies
+    - Outputs predictions for ensemble meta-classifier
+"""
+
 import json
 import os
 import pandas as pd
