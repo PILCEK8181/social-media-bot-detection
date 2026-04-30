@@ -1,3 +1,16 @@
+"""
+Metrics Saving Utility
+
+Author: xzacekp00 Patrik Žáček
+Institution: BUT FIT (Brno University of Technology, Faculty of Information Technology)
+Type: Bachelor's Thesis 2026
+Topic: Detection of Fake Accounts on Social Media Networks
+
+Description:
+    Utility module for saving model evaluation metrics to CSV files.
+    Supports batch recording of experiments with timestamps and notes.
+"""
+
 import os
 import csv
 from datetime import datetime

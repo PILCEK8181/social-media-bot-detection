@@ -1,3 +1,21 @@
+"""
+================================================================================
+Random Forest Meta-Classifier for Bot Detection Ensemble (Ablation Study)
+
+Author: xzacekp00 Patrik Žáček
+Institution: BUT FIT (Brno University of Technology, Faculty of Information Technology)
+Type: Bachelor's Thesis 2026
+Topic: Detection of Fake Accounts on Social Media Networks
+
+Description:
+    Random Forest meta-classifier that stacks predictions from the base models
+    (Random Forest, LSTM, and RoBERTa). This classifier is NOT used in the final
+    ensemble, but was used in ablation studies to test Random Forest as an alternative
+    meta-learner against the selected Logistic Regression approach.
+
+================================================================================
+"""
+
 import os
 import pandas as pd
 import numpy as np

@@ -1,4 +1,16 @@
 
+"""
+Evaluation Utilities for Bot Detection Models
+
+Author: xzacekp00 Patrik Žáček
+Institution: BUT FIT (Brno University of Technology, Faculty of Information Technology)
+Type: Bachelor's Thesis 2026
+Topic: Detection of Fake Accounts on Social Media Networks
+
+Description:
+    Utility functions for model evaluation including confidence intervals,
+    statistical tests (McNemar), and metrics visualization.
+"""
 
 import numpy as np
 import matplotlib.pyplot as plt

@@ -1,4 +1,21 @@
 
+"""
+================================================================================
+Meta-Classifier for Bot Detection Ensemble
+
+Author: xzacekp00 Patrik Žáček
+Institution: BUT FIT (Brno University of Technology, Faculty of Information Technology)
+Type: Bachelor's Thesis 2026
+Topic: Detection of Fake Accounts on Social Media Networks
+
+Description:
+    Logistic Regression meta-classifier that stacks predictions from the
+    base models (Random Forest, LSTM, and RoBERTa) to produce final bot
+    detection predictions.
+
+================================================================================
+"""
+
 import os
 import pandas as pd
 import numpy as np

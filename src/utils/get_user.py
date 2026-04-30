@@ -1,3 +1,16 @@
+"""
+User Data Retrieval Utility
+
+Author: xzacekp00 Patrik Žáček
+Institution: BUT FIT (Brno University of Technology, Faculty of Information Technology)
+Type: Bachelor's Thesis 2026
+Topic: Detection of Fake Accounts on Social Media Networks
+
+Description:
+    Utility module for extracting and retrieving user profile data from the TwiBot-22
+    dataset. Supports random selection and specific user lookup.
+"""
+
 import os
 import ijson
 import json
