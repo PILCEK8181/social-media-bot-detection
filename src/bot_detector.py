@@ -1,14 +1,29 @@
 """
-Offline Bot Detection - Ensemble Model
-Combines RF (metadata) and RoBERTa (text embeddings) models
+Bot Detection Ensemble - Demo/Testing Script
 
-===============================================================================
+Author: xzacekp00 Patrik Žáček
+Institution: BUT FIT (Brno University of Technology, Faculty of Information Technology)
+Type: Bachelor's Thesis 2026
+Topic: Detection of Fake Accounts on Social Media Networks
+
+Description:
+    Offline bot detection using the complete ensemble model. Combines predictions
+    from Random Forest (metadata), RoBERTa (content embeddings), and stacks them
+    with Logistic Regression for final bot/human classification.
+
 USAGE:
-    python bot_detector.py <username> [--mode demo|live]
+    python bot_detector.py --target <username> [--mode demo|live] [--threshold 0.5] [--verbose]
 
 EXAMPLE:
-    python bot_detector.py Charles_leclerc              # uses pre-scraped demo data
-    python bot_detector.py Charles_leclerc --mode live   # scrapes fresh data first
+    python bot_detector.py --target Charles_leclerc              # uses pre-scraped demo data
+    python bot_detector.py --target Charles_leclerc --mode live   # scrapes fresh data first
+    python bot_detector.py --target @suspect_user --threshold 0.7 --verbose
+
+CONFIGURABLE PARAMETERS:
+    --target: String - Target username (e.g., @elonmusk) or path to a batch file (required)
+    --mode: String - "live" or "demo" (default: demo)
+    --threshold: Float - Probability threshold for binary classification (default: 0.5)
+    --verbose: Flag - Enables detailed logging of the feature extraction process
 
 REQUIREMENTS:
     - Demo data files in ./demo/profile_<username>.json and ./tweets_<username>.json
@@ -26,8 +41,7 @@ INPUT DATA FORMAT:
         - Date, Text, Likes, Retweets, Replies, Author
 
 OUTPUT:
-    - ./output/bot_detection_<username>_<timestamp>.o (formatted report)
-    - ./output/bot_detection_<username>_<timestamp>.json (structured data)
+    - ./output/bot_detection_<username>_<timestamp>.json (structured JSON data)
 
 MODEL DESCRIPTIONS:
     1. Random Forest: Profile metadata classifier
@@ -45,10 +59,22 @@ MODEL DESCRIPTIONS:
        - Combines RF and RoBERTa probabilities optimally
        - Provides final bot classification and confidence score
 
-OUTPUT INTERPRETATION:
-    - Classification: "BOT" or "HUMAN"
-    - Confidence: Probability of predicted class (0.0-1.0)
-    - Expert Models: Individual predictions showing how models agree/disagree
+OUTPUT SPECIFICATION:
+    Console Output:
+        - Human-readable summary printed to stdout
+        - Classification label (BOT or HUMAN)
+        - Confidence score (probability 0.0-1.0)
+        - Individual modality scores (Metadata, Text, Temporal)
+    
+    Structured Output (JSON):
+        - username: Twitter/X username
+        - prediction: Binary label based on the decision threshold
+        - probability: Aggregate likelihood of the account being a bot (P ∈ [0, 1])
+        - modality_scores: Raw confidence scores from individual sub-models
+          * metadata: Random Forest probability
+          * text: RoBERTa probability
+        - timestamp: ISO 8601 timestamp of analysis
+        - threshold: Probability threshold used for classification
 
 ===============================================================================
 """
@@ -204,35 +230,46 @@ def combine_predictions(rf_prob: float, roberta_prob: float, meta_classifier) ->
 # Main Detection Pipeline
 # ============================================================================
 
-def detect_bot(username: str) -> Dict:
+def detect_bot(username: str, threshold: float = 0.5, verbose: bool = False) -> Dict:
+    if verbose:
+        print("[INFO] Detailed logging enabled")
+    
     print("\n" + "="*70)
-    print(f"BOT DETECTION FOR USER: @{username}")
+    print(f"REPORT for @{username}")
     print("="*70)
     
     try:
         # Load data
-        print("\nLoading profile and tweet data...")
+        print("\n[INFO] Fetching timeline for @{username}...".format(username=username))
         profile_data, tweets_data = load_profile_data(username)
-        print(f"  User: {profile_data['display_name']} (@{username})")
-        print(f"  Followers: {profile_data['followers_count']:,}")
-        print(f"  Tweets: {profile_data['tweet_count']:,}")
-        print(f"  Tweets in demo data: {len(tweets_data)}")
+        if verbose:
+            print(f"  [DEBUG] User: {profile_data['display_name']} (@{username})")
+            print(f"  [DEBUG] Followers: {profile_data['followers_count']:,}")
+            print(f"  [DEBUG] Tweets: {profile_data['tweet_count']:,}")
+            print(f"  [DEBUG] Tweets in demo data: {len(tweets_data)}")
+        else:
+            print(f"[INFO] Analyzed {len(tweets_data)} tweets.")
         
         # Extract features
-        print("\nExtracting Random Forest features...")
+        if verbose:
+            print("\n[DEBUG] Extracting Random Forest features...")
         rf_features = extract_rf_features(profile_data)
         
-        print("Extracting RoBERTa features...")
+        if verbose:
+            print("[DEBUG] Extracting RoBERTa features...")
         bio = profile_data['bio']
         tweets = [str(t.get('Text', '')) for t in tweets_data[:20]]
         
-        print("Generating RoBERTa embeddings...")
+        if verbose:
+            print("[DEBUG] Generating RoBERTa embeddings...")
         bio_emb, tweets_emb = generate_roberta_embeddings(bio, tweets)
         
         # Load models
-        print("Loading models...")
+        if verbose:
+            print("\n[DEBUG] Loading models...")
         rf_model = joblib.load(RF_MODEL_PATH)
-        print(f"RF model loaded")
+        if verbose:
+            print(f"[DEBUG] RF model loaded")
         
         # Load RoBERTa model
         roberta_checkpoint = torch.load(ROBERTA_MODEL_PATH, map_location=DEVICE)
@@ -247,52 +284,50 @@ def detect_bot(username: str) -> Dict:
         roberta_model.load_state_dict(roberta_state_dict)
         roberta_model = roberta_model.to(DEVICE)
         roberta_model.eval()
-        print(f"RoBERTa model loaded")
+        if verbose:
+            print(f"[DEBUG] RoBERTa model loaded")
         
         meta_classifier = joblib.load(META_CLASSIFIER_PATH)
-        print(f"Meta-Classifier loaded")
+        if verbose:
+            print(f"[DEBUG] Meta-Classifier loaded")
         
         # Get predictions
-        print("\n" + "="*70)
-        print("PREDICTIONS")
-        print("="*70)
+        if verbose:
+            print("\n[DEBUG] Extracting features...")
         
         rf_prob = predict_rf(rf_model, rf_features)
-        print(f"\n  Random Forest:      {rf_prob:.4f} (Bot probability)")
-        
         roberta_prob = predict_roberta(roberta_model, bio_emb, tweets_emb)
-        print(f"  RoBERTa:            {roberta_prob:.4f} (Bot probability)")
-        
         final_pred, final_prob = combine_predictions(rf_prob, roberta_prob, meta_classifier)
         
-        print("\n" + "="*70)
-        print("FINAL DECISION")
-        print("="*70)
+        # Apply threshold
+        prediction_label = 1 if final_prob >= threshold else 0
+        result_class = "BOT" if prediction_label == 1 else "HUMAN"
         
-        result_class = "BOT" if final_pred == 1 else "HUMAN"
+        # Console Output - Human-readable summary
+        print("\n" + "-"*70)
+        print(f"Verdict: {result_class}")
+        print(f"Confidence: {final_prob:.2f}")
+        print(f"Breakdown: Metadata({rf_prob:.2f}) | Text({roberta_prob:.2f})")
+        print("-"*70)
+        print(f"[INFO] Result saved to /output/bot_detection_{username}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
+        print("-"*70 + "\n")
         
-        print(f"  Classification:     {result_class}")
-        print(f"  Confidence:         {final_prob:.4f}")
-        print("="*70 + "\n")
-        
-        # Prepare results
+        # Prepare results - Structured Output (JSON)
         results = {
-            'timestamp': datetime.now(timezone.utc).isoformat(),
             'username': username,
+            'prediction': result_class,
+            'probability': float(final_prob),
+            'threshold': threshold,
+            'modality_scores': {
+                'metadata': float(rf_prob),
+                'text': float(roberta_prob),
+            },
+            'timestamp': datetime.now(timezone.utc).isoformat(),
             'display_name': profile_data['display_name'],
             'followers': profile_data['followers_count'],
             'following': profile_data['following_count'],
             'tweets': profile_data['tweet_count'],
             'verified': profile_data['verified'],
-            'expert_models': {
-                'random_forest': float(rf_prob),
-                'roberta': float(roberta_prob),
-            },
-            'ensemble': {
-                'prediction': result_class,
-                'confidence': float(final_prob),
-                'raw_probability': float(final_prob)
-            }
         }
         
         return results
@@ -304,43 +339,13 @@ def detect_bot(username: str) -> Dict:
 
 def save_results(results: Dict, username: str):   
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    output_file = os.path.join(OUTPUT_DIR, f"bot_detection_{username}_{timestamp}.o")
+    output_file = os.path.join(OUTPUT_DIR, f"bot_detection_{username}_{timestamp}.json")
     
-    # Write results as formatted text
+    # Save structured JSON output
     with open(output_file, 'w') as f:
-        f.write("="*70 + "\n")
-        f.write("BOT DETECTION REPORT\n")
-        f.write("="*70 + "\n\n")
-        
-        f.write(f"User: @{results['username']}\n")
-        f.write(f"Display Name: {results['display_name']}\n")
-        f.write(f"Followers: {results['followers']:,}\n")
-        f.write(f"Following: {results['following']:,}\n")
-        f.write(f"Tweets: {results['tweets']:,}\n")
-        f.write(f"Verified: {results['verified']}\n\n")
-        
-        f.write("-"*70 + "\n")
-        f.write("EXPERT MODEL PREDICTIONS (Bot Probability)\n")
-        f.write("-"*70 + "\n")
-        f.write(f"Random Forest:  {results['expert_models']['random_forest']:.4f}\n")
-        f.write(f"RoBERTa:        {results['expert_models']['roberta']:.4f}\n\n")
-        
-        f.write("-"*70 + "\n")
-        f.write("ENSEMBLE DECISION\n")
-        f.write("-"*70 + "\n")
-        f.write(f"Classification: {results['ensemble']['prediction']}\n")
-        f.write(f"Confidence:     {results['ensemble']['confidence']:.4f}\n\n")
-        
-        f.write(f"Generated: {results['timestamp']}\n")
-    
-    # Also save as JSON for easier parsing
-    json_output = output_file.replace('.o', '.json')
-    with open(json_output, 'w') as f:
         json.dump(results, f, indent=2)
     
-    print(f"Results saved to: {output_file}")
-    print(f"JSON results saved to: {json_output}")
-    
+    print(f"[INFO] Result saved to {os.path.basename(output_file)}")
     return output_file
 
 
@@ -349,22 +354,39 @@ def save_results(results: Dict, username: str):
 # ============================================================================
 
 def main():
-    parser = argparse.ArgumentParser(description='Bot Detection using Ensemble Model')
-    parser.add_argument('username', help='Twitter username to analyze (without @)')
+    parser = argparse.ArgumentParser(
+        description='Bot Detection using Ensemble Model',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog='''
+EXAMPLES:
+  %(prog)s --target Charles_leclerc
+  %(prog)s --target @suspect_user --mode live --threshold 0.7
+  %(prog)s --target @suspect_user --threshold 0.7 --verbose
+        ''')
+    
+    parser.add_argument('--target', required=True, 
+                        help='Target username (e.g., @elonmusk) or path to a batch file')
     parser.add_argument('--mode', choices=['demo', 'live'], default='demo',
-                        help='demo = use existing data in ./demo, live = scrape fresh data first')
+                        help='demo = use existing data in ./demo, live = scrape fresh data first (default: demo)')
+    parser.add_argument('--threshold', type=float, default=0.5,
+                        help='Probability threshold for binary classification (default: 0.5)')
+    parser.add_argument('--verbose', action='store_true',
+                        help='Enables detailed logging of the feature extraction process')
+    
     args = parser.parse_args()
+    
+    # Clean up username (remove @ if present)
+    username = args.target.lstrip('@')
     
     try:
         if args.mode == 'live':
             from scrape import scrape_user
-            scrape_user(args.username, output_dir=DEMO_DIR)
+            scrape_user(username, output_dir=DEMO_DIR)
         
-        results = detect_bot(args.username)
-        results['mode'] = args.mode
-        save_results(results, args.username)
+        results = detect_bot(username, threshold=args.threshold, verbose=args.verbose)
+        save_results(results, username)
     except Exception as e:
-        print(f"\nFatal error: {str(e)}")
+        print(f"\n[ERROR] {str(e)}")
         sys.exit(1)
 
 

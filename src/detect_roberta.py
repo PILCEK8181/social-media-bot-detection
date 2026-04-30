@@ -1,12 +1,21 @@
 """
-Offline Bot Detection - RoBERTa ONLY
-Uses strictly text embeddings from Tweets and Profile Bio.
+Bot Detection - RoBERTa Content Branch Only
+
+Author: xzacekp00 Patrik Žáček
+Institution: BUT FIT (Brno University of Technology, Faculty of Information Technology)
+Type: Bachelor's Thesis 2026
+Topic: Detection of Fake Accounts on Social Media Networks
+
+Description:
+    Standalone bot detection using only the RoBERTa content branch.
+    Uses 768-dim embeddings from tweets and user bios for classification.
+    Useful for testing individual model components and content-based detection.
 
 USAGE:
-    python bot_detector_roberta_only.py <username>
+    python detect_roberta.py <username>
 
 EXAMPLE:
-    python bot_detector_roberta_only.py Charles_leclerc
+    python detect_roberta.py Charles_leclerc
 """
 
 import os

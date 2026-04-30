@@ -1,6 +1,15 @@
 """
-Offline Bot Detection - Random Forest ONLY
-Uses strictly profile metadata (15 features).
+Bot Detection - Random Forest Branch Only
+
+Author: xzacekp00 Patrik Žáček
+Institution: BUT FIT (Brno University of Technology, Faculty of Information Technology)
+Type: Bachelor's Thesis 2026
+Topic: Detection of Fake Accounts on Social Media Networks
+
+Description:
+    Standalone bot detection using only the Random Forest metadata branch.
+    Uses 15 profile features (account age, followers, verification, etc.)
+    for classification. Useful for testing individual model components.
 
 USAGE:
     python detect_rf.py <username> [--mode demo|live]
