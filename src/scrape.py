@@ -1,3 +1,28 @@
+"""
+Twitter/X Data Scraper
+
+Author: xzacekp00 Patrik Žáček
+Institution: BUT FIT (Brno University of Technology, Faculty of Information Technology)
+Type: Bachelor's Thesis 2026
+Topic: Detection of Fake Accounts on Social Media Networks
+
+Description:
+    Web scraper for Twitter/X using Playwright to collect user profiles and tweet data.
+    Captures user metadata, profile information, and historical tweets for bot detection
+    analysis. Supports automated scraping of multiple target accounts.
+
+Features:
+    - Browser automation using Playwright
+    - User profile data extraction (metadata, public metrics, verification status)
+    - Tweet collection (text, timestamps, engagement metrics)
+    - JSON export for preprocessing and model training
+    - Support for batch account scraping
+
+OUTPUT:
+    - profile_<username>.json: User profile metadata
+    - tweets_<username>.json: User tweet data
+"""
+
 from playwright.sync_api import sync_playwright
 import pandas as pd
 import json
