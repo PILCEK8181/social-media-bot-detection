@@ -1,3 +1,26 @@
+"""
+RoBERTa Preprocessing - Bio Embeddings Generation
+
+Author: xzacekp00 Patrik Žáček
+Institution: BUT FIT (Brno University of Technology, Faculty of Information Technology)
+Type: Bachelor's Thesis 2026
+Topic: Detection of Fake Accounts on Social Media Networks
+
+Description:
+    Generates 768-dimensional RoBERTa embeddings for user biography text. Processes
+    user bios using RoBERTa-base model and extracts contextual embeddings. Later
+    concatenated with tweet embeddings for the RoBERTa content branch.
+
+Output:
+    - temp/roberta_bio_embeddings.pt: Contains embeddings, user IDs, labels, and splits
+    
+Features:
+    - RoBERTa-base tokenizer and model
+    - Batch processing (default batch size: 128)
+    - CUDA support for GPU acceleration
+    - Single embedding per user (represents entire bio)
+"""
+
 import os
 import json
 import torch

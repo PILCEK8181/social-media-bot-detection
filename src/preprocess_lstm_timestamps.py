@@ -1,3 +1,26 @@
+"""
+LSTM Preprocessing - Inter-Arrival Times Generation
+
+Author: xzacekp00 Patrik Žáček
+Institution: BUT FIT (Brno University of Technology, Faculty of Information Technology)
+Type: Bachelor's Thesis 2026
+Topic: Detection of Fake Accounts on Social Media Networks
+
+Description:
+    Iteratively reads large Twitter JSON datasets to extract raw timestamps 
+    for a specific subset of verified users. This serves as the preliminary 
+    data gathering step before calculating inter-arrival times (IAT).
+
+Output:
+    - temp/processed_timestamps.csv: Contains raw pairs of 'user_id' and 'timestamp'
+    
+Features:
+    - Memory-efficient JSON parsing using ijson (handles large tweet_x.json files)
+    - Filters tweets based on valid user IDs extracted from label.csv
+    - Extracts the 'created_at' field for each valid tweet
+    - Consolidates all raw user timestamps into a single CSV file
+"""
+
 import json
 import numpy as np
 import pandas as pd

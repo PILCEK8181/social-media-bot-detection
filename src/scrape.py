@@ -4,8 +4,8 @@ import json
 import os
 
 # CONFIG, set your own tokens here
-AUTH_TOKEN = "d96a295cea4ec0f0afd07b550d9d1064988f2eb6"
-CT0_TOKEN = "6240dd8ac9879a1ae1eb7f146dc3bd241067cb895606d764ac585728d4c0eb95bb2ae156e17bea422fd96d8c96b50a7e02467e6623220d26ac1ea9e0aa1d71370532eae73b2ea198ecbad76025f973a7"
+AUTH_TOKEN = "XXX"
+CT0_TOKEN = "XXX"
 
 TARGET_ACCOUNTS = ["Ahoj1", "Charles_leclerc", "elonmusk", "BarackObama", "JoeBiden", "BillGates", "ladygaga", "Cristiano", "rihanna", "KimKardashian"] 
 

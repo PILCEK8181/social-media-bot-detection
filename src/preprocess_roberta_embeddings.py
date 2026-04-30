@@ -1,3 +1,26 @@
+"""
+RoBERTa Preprocessing - Tweet Embeddings Generation
+
+Author: xzacekp00 Patrik Žáček
+Institution: BUT FIT (Brno University of Technology, Faculty of Information Technology)
+Type: Bachelor's Thesis 2026
+Topic: Detection of Fake Accounts on Social Media Networks
+
+Description:
+    Generates 768-dimensional RoBERTa embeddings for user tweets. Processes tweet
+    text using RoBERTa-base model and extracts contextual embeddings for content-based
+    bot detection.
+
+Output:
+    - temp/roberta_embeddings.pt: Contains embeddings, user IDs, labels, and splits
+    
+Features:
+    - RoBERTa-base tokenizer and model
+    - Batch processing (default batch size: 128)
+    - CUDA support for GPU acceleration
+    - Top 20 tweets per user (padding with zeros for shorter sequences)
+"""
+
 import os
 import json
 import torch
