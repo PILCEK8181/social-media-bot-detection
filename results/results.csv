@@ -1,0 +1,221 @@
+TIME,MODEL,SEED,ACC,PREC,RECALL,F1,MCC,NOTE
+2026-03-09 23:56:31,03_roberta.py,9648,0.7171,0.6185,0.1025,0.1758,0.1610,-no update
+2026-03-10 00:00:25,03_roberta.py,2022,0.7158,0.6152,0.0930,0.1616,0.1519
+2026-03-10 00:32:15,03_roberta.py,2390,0.7168,0.6328,0.0910,0.1590,0.1561
+2026-03-10 00:34:39,03_roberta.py,5027,0.7160,0.6178,0.0928,0.1614,0.1526
+2026-03-10 00:40:28,03_roberta.py,3051,0.7172,0.6234,0.0999,0.1722,0.1606
+2026-03-10 17:59:54,03_roberta.py,1756,0.7188,0.6291,0.1092,0.1861,0.1704,- BatchNorm
+2026-03-10 18:08:24,03_roberta.py,1937,0.7193,0.6319,0.1116,0.1896,0.1734,- BatchNorm
+2026-03-10 17:54:26,03_roberta.py,2497,0.7191,0.6338,0.1090,0.1860,0.1719,- BatchNorm
+2026-03-10 18:47:10,03_roberta.py,7084,0.7203,0.5963,0.1551,0.2462,0.1907,- new save
+2026-03-10 19:13:40,03_roberta.py,3299,0.7210,0.6261,0.1303,0.2158,0.1859,- new save
+2026-03-10 19:15:23,03_roberta.py,3359,0.7188,0.6286,0.1097,0.1868,0.1706,- new save
+2026-03-10 21:23:12,00_meta_classifier.py,16,0.7023,0.4959,0.6658,0.5684,0.3574,"Meta-Classifier Stacking // text,feature"
+2026-03-10 21:23:36,00_meta_classifier.py,16,0.7023,0.4959,0.6658,0.5684,0.3574,"Meta-Classifier Stacking // text,feature"
+2026-03-10 21:23:37,00_meta_classifier.py,16,0.7023,0.4959,0.6658,0.5684,0.3574,"Meta-Classifier Stacking // text,feature"
+2026-03-10 22:49:12,01_rf.py,4489,0.6975,0.4892,0.6231,0.5481,0.3310,Random Forest // feature
+2026-03-10 22:53:32,01_rf.py,5276,0.6973,0.4891,0.6265,0.5493,0.3323,Random Forest // feature
+2026-03-10 22:53:52,01_rf.py,2406,0.6971,0.4888,0.6247,0.5485,0.3312,Random Forest // feature
+2026-03-10 22:57:50,01_rf.py,5509,0.6980,0.4899,0.6262,0.5498,0.3332,Random Forest // feature
+2026-03-10 22:57:55,01_rf.py,4288,0.6976,0.4894,0.6247,0.5488,0.3319,Random Forest // feature
+2026-03-11 00:49:26,03_roberta.py,8880,0.7200,0.6291,0.1191,0.2003,0.1784,ZLATÝ BASELINE - saved
+2026-03-11 00:53:16,03_roberta.py,4936,0.7197,0.5970,0.1472,0.2362,0.1858,ZLATÝ BASELINE - saved
+2026-03-11 00:55:25,03_roberta.py,5671,0.7195,0.6255,0.1179,0.1984,0.1761,ZLATÝ BASELINE - saved
+2026-03-11 01:32:45,03_roberta.py,4774,0.7196,0.6247,0.1193,0.2004,0.1769,ZLATÝ BASELINE - 1e-5
+2026-03-11 01:41:23,03_roberta.py,387,0.7198,0.6352,0.1140,0.1933,0.1766,ZLATÝ BASELINE - 1e-5
+2026-03-11 01:44:14,03_roberta.py,2807,0.7188,0.6239,0.1135,0.1921,0.1720,ZLATÝ BASELINE - 1e-5
+2026-03-11 09:39:19,03_roberta.py,2575,0.7198,0.6085,0.1356,0.2218,0.1826,ZLATÝ BASELINE - 1e-5
+2026-03-11 09:41:02,03_roberta.py,1611,0.7196,0.6259,0.1187,0.1996,0.1769,ZLATÝ BASELINE - 1e-5
+2026-03-11 09:43:56,03_roberta.py,4218,0.7191,0.6237,0.1156,0.1950,0.1735,ZLATÝ BASELINE - 1e-5
+2026-03-11 09:50:59,03_roberta.py,6176,0.7202,0.6259,0.1234,0.2061,0.1805,ZLATÝ BASELINE - 1e-5
+2026-03-11 09:51:15,03_roberta.py,4043,0.7203,0.6290,0.1219,0.2042,0.1806,ZLATÝ BASELINE - 1e-5
+2026-03-11 09:56:13,03_roberta.py,1935,0.7192,0.6116,0.1272,0.2106,0.1777,ZLATÝ BASELINE - 1e-5
+2026-03-11 16:28:47,03_roberta.py,1805,0.7212,0.6340,0.1259,0.2101,0.1857,ZLATÝ BASELINE - 1e-4
+2026-03-11 16:29:29,03_roberta.py,7707,0.7169,0.5775,0.1438,0.2303,0.1747,ZLATÝ BASELINE - 1e-4
+2026-03-11 16:36:16,03_roberta.py,7075,0.7219,0.6220,0.1415,0.2306,0.1926,ZLATÝ BASELINE - 1e-4
+2026-03-11 16:38:29,03_roberta.py,2592,0.7226,0.6394,0.1325,0.2195,0.1929,ZLATÝ BASELINE - 1e-4
+2026-03-11 17:35:04,00_meta_classifier.py,30,0.7770,0.6906,0.4398,0.5374,0.4175,"Meta-Classifier Stacking // text,feature - ignore class weights"
+2026-03-11 17:36:51,00_meta_classifier.py,4112,0.7770,0.6906,0.4398,0.5374,0.4175,"Meta-Classifier Stacking // text,feature - ignore class weights"
+2026-03-11 17:36:51,00_meta_classifier.py,2630,0.7770,0.6906,0.4398,0.5374,0.4175,"Meta-Classifier Stacking // text,feature - ignore class weights"
+2026-03-11 20:58:47,01_rf.py,1092,0.6964,0.4879,0.6276,0.5490,0.3314,Random Forest // feature
+2026-03-11 21:49:05,01_rf.py,9538,0.7062,0.5009,0.6070,0.5488,0.3373,"Random Forest // '{0: 1.0, 1: 10.0}'"
+2026-03-11 22:21:42,01_rf.py,8377,0.7012,0.4941,0.6155,0.5482,0.3334,Random Forest // 'no scaler'
+2026-03-11 23:00:28,01_rf.py,9181,0.6721,0.4613,0.6777,0.5489,0.3196,"Random Forest // '{0: 1.0, 1: 20.0}'"
+2026-03-11 23:58:30,01_rf.py,3298,0.7692,0.6865,0.3981,0.5039,0.3903,Random Forest // 'cooked'
+2026-03-14 22:38:15,01_rf.py,723,0.7016,0.4945,0.6172,0.5491,0.3346,before refactor'
+2026-03-14 22:38:15,01_rf.py,8208,0.7012,0.4940,0.6188,0.5494,0.3347,before refactor'
+2026-03-14 22:38:32,01_rf.py,3917,0.7021,0.4953,0.6142,0.5484,0.3342,before refactor'
+2026-03-14 23:00:18,01_rf.py,5355,0.7016,0.4946,0.6150,0.5482,0.3337,refactored
+2026-03-14 23:01:05,01_rf.py,123,0.7021,0.4952,0.6144,0.5484,0.3342,refactored
+2026-03-14 23:02:12,01_rf.py,122,0.7018,0.4949,0.6137,0.5479,0.3335,refactored
+2026-03-14 23:19:11,01_rf.py,138,0.7013,0.4942,0.6167,0.5487,0.3340,refactored again
+2026-03-14 23:21:08,01_rf.py,5133,0.7018,0.4949,0.6133,0.5477,0.3333,refactored again
+2026-03-14 23:24:23,01_rf.py,1165,0.7032,0.4967,0.6145,0.5494,0.3360,refactored again
+2026-03-14 23:42:55,01_rf.py,723,0.7016,0.4945,0.6172,0.5491,0.3346,refactored again
+2026-03-14 23:43:06,01_rf.py,723,0.7016,0.4945,0.6172,0.5491,0.3346,refactored again
+2026-03-14 23:43:39,01_rf.py,723,0.7016,0.4945,0.6172,0.5491,0.3346,refactored again
+2026-03-14 23:44:17,01_rf.py,723,0.7016,0.4945,0.6172,0.5491,0.3346,refactored again
+2026-03-14 23:45:13,01_rf.py,723,0.7016,0.4945,0.6172,0.5491,0.3346,refactored again
+2026-03-14 23:47:12,01_rf.py,723,0.7016,0.4945,0.6172,0.5491,0.3346,refactored again
+2026-03-15 09:30:15,03_roberta.py,6189,0.7205,0.6258,0.1262,0.2101,0.1827,Final BASE - 30 tweets - 1e-4
+2026-03-15 09:30:27,03_roberta.py,1127,0.7156,0.5745,0.1315,0.2141,0.1652,Final BASE - 30 tweets - 1e-4
+2026-03-15 09:32:56,03_roberta.py,3059,0.7207,0.6363,0.1202,0.2022,0.1821,Final BASE - 30 tweets - 1e-4
+2026-03-15 09:33:06,03_roberta.py,3370,0.7245,0.6344,0.1516,0.2447,0.2052,Final BASE - 30 tweets - 1e-4
+2026-03-15 09:33:27,03_roberta.py,4435,0.7159,0.5934,0.1113,0.1874,0.1586,Final BASE - 30 tweets - 1e-4
+2026-03-15 09:54:15,03_roberta.py,2364,0.7229,0.6209,0.1516,0.2437,0.1993,Final BASE - 10 tweets - 1e-4
+2026-03-15 09:54:23,03_roberta.py,1540,0.7191,0.6193,0.1197,0.2006,0.1751,Final BASE - 10 tweets - 1e-4
+2026-03-15 09:55:29,03_roberta.py,9906,0.7184,0.5916,0.1411,0.2279,0.1792,Final BASE - 10 tweets - 1e-4
+2026-03-15 09:58:01,03_roberta.py,6250,0.7202,0.6344,0.1177,0.1986,0.1793,Final BASE - 10 tweets - 1e-4
+2026-03-15 09:59:52,03_roberta.py,2430,0.7228,0.6245,0.1472,0.2382,0.1977,Final BASE - 10 tweets - 1e-4
+2026-03-15 10:14:16,03_roberta.py,8816,0.7194,0.6301,0.1141,0.1933,0.1748,Final BASE - 20 tweets - 1e-4
+2026-03-15 10:18:14,03_roberta.py,5878,0.7206,0.6296,0.1237,0.2068,0.1822,Final BASE - 20 tweets - 1e-4
+2026-03-15 10:18:22,03_roberta.py,2605,0.7211,0.6222,0.1341,0.2206,0.1871,Final BASE - 20 tweets - 1e-4
+2026-03-15 10:18:34,03_roberta.py,5766,0.7197,0.6111,0.1317,0.2168,0.1809,Final BASE - 20 tweets - 1e-4
+2026-03-15 10:18:52,03_roberta.py,1014,0.7200,0.6327,0.1172,0.1978,0.1783,Final BASE - 20 tweets - 1e-4
+2026-03-15 10:35:33,03_roberta.py,3370,0.7215,0.6367,0.1264,0.2109,0.1871,Final BASE - 20 tweets - 1e-4 SET SEED 3370
+2026-03-15 10:36:10,03_roberta.py,3370,0.7193,0.6198,0.1205,0.2018,0.1759,Final BASE - 20 tweets - 1e-4 SET SEED 3370
+2026-03-15 10:44:27,03_roberta.py,3370,0.7202,0.6248,0.1246,0.2078,0.1810,Final BASE - 30 tweets - 1e-4 SET SEED 3370
+2026-03-15 10:44:32,03_roberta.py,3370,0.7190,0.6368,0.1062,0.1821,0.1707,Final BASE - 10 tweets - 1e-4 SET SEED 3370
+2026-03-15 10:45:23,03_roberta.py,3370,0.7222,0.6012,0.1674,0.2619,0.2012,Final BASE - 30 tweets - 1e-4 SET SEED 3370
+2026-03-15 10:56:13,03_roberta.py,3370,0.7231,0.6334,0.1418,0.2317,0.1976,Final BASE - 10 tweets - 1e-4 SET SEED 3370
+2026-03-15 11:10:14,03_roberta.py,3370,0.7193,0.6212,0.1195,0.2005,0.1757,Final BASE - 30 tweets - 1e-5 SET SEED 3370
+2026-03-15 11:11:21,03_roberta.py,3370,0.7206,0.6142,0.1378,0.2250,0.1865,Final BASE - 30 tweets - 1e-5 SET SEED 3370
+2026-03-15 11:12:58,03_roberta.py,3370,0.7190,0.6183,0.1191,0.1997,0.1742,Final BASE - 20 tweets - 1e-5 SET SEED 3370
+2026-03-15 11:15:56,03_roberta.py,3370,0.7192,0.6197,0.1199,0.2009,0.1753,Final BASE - 20 tweets - 1e-5 SET SEED 3370
+2026-03-15 11:21:23,03_roberta.py,3370,0.7173,0.6158,0.1064,0.1814,0.1632,Final BASE - 10 tweets - 1e-5 SET SEED 3370
+2026-03-15 11:26:22,03_roberta.py,3370,0.7182,0.6126,0.1167,0.1960,0.1702,Final BASE - 10 tweets - 1e-5 SET SEED 3370
+2026-03-15 11:44:27,03_roberta.py,3370,0.7535,0.6078,0.4589,0.5229,0.3676,NORMID Final BASE - 20 tweets - 1e-4 SET SEED 3370
+2026-03-15 11:44:29,03_roberta.py,3370,0.7514,0.5963,0.4822,0.5332,0.3702,NORMID Final BASE - 20 tweets - 1e-4 SET SEED 3370
+2026-03-15 11:45:03,03_roberta.py,3370,0.7531,0.6074,0.4567,0.5214,0.3662,NORMID Final BASE - 20 tweets - 1e-4 SET SEED 3370
+2026-03-15 11:53:33,03_roberta.py,3370,0.7519,0.5984,0.4782,0.5316,0.3699,NORMID Final BASE - 20 tweets - 1e-4 SET SEED 3370
+2026-03-15 12:00:04,03_roberta.py,3370,0.7504,0.5930,0.4852,0.5337,0.3690,NORMID Final BASE - 20 tweets - 1e-4 SET SEED 3370
+2026-03-15 13:27:15,03_roberta.py,3370,0.7182,0.6150,0.1150,0.1937,0.1697,NORMID Final BASE - 20 tweets - 1e-4 SET SEED 3370
+2026-03-15 13:28:20,03_roberta.py,3370,0.7178,0.6012,0.1235,0.2048,0.1707,NORMID Final BASE - 20 tweets - 1e-4 SET SEED 3370
+2026-03-15 13:28:32,03_roberta.py,3370,0.7205,0.6430,0.1138,0.1934,0.1793,NORMID Final BASE - 20 tweets - 1e-4 SET SEED 3370
+2026-03-15 13:35:29,03_roberta.py,6858,0.7205,0.6361,0.1186,0.1999,0.1806,Z Final BASE - 20 tweets - 1e-4
+2026-03-15 13:36:26,03_roberta.py,9795,0.7227,0.6179,0.1522,0.2443,0.1984,Z Final BASE - 20 tweets - 1e-4
+2026-03-15 13:36:36,03_roberta.py,8147,0.7197,0.6073,0.1358,0.2220,0.1822,Z Final BASE - 20 tweets - 1e-4
+2026-03-15 13:36:38,03_roberta.py,7604,0.7203,0.6263,0.1240,0.2071,0.1812,Z Final BASE - 20 tweets - 1e-4
+2026-03-15 13:36:39,03_roberta.py,6288,0.7200,0.6228,0.1247,0.2078,0.1803,Z Final BASE - 20 tweets - 1e-4
+2026-03-15 13:36:44,03_roberta.py,6185,0.7168,0.5704,0.1547,0.2434,0.1784,Z Final BASE - 20 tweets - 1e-4
+2026-03-15 13:37:07,03_roberta.py,6254,0.7221,0.6318,0.1345,0.2218,0.1914,Z Final BASE - 20 tweets - 1e-4
+2026-03-15 13:37:54,03_roberta.py,2540,0.7201,0.6228,0.1250,0.2082,0.1805,Z Final BASE - 20 tweets - 1e-4
+2026-03-15 13:37:58,03_roberta.py,8923,0.7211,0.6286,0.1288,0.2138,0.1858,Z Final BASE - 20 tweets - 1e-4
+2026-03-15 13:38:54,03_roberta.py,9854,0.7194,0.6309,0.1132,0.1920,0.1743,Z Final BASE - 20 tweets - 1e-4
+2026-03-15 13:51:04,03_roberta.py,1622,0.7191,0.6189,0.1200,0.2010,0.1751,Z Final BASE - 10 tweets - 1e-4
+2026-03-15 13:53:52,03_roberta.py,3911,0.7211,0.6346,0.1248,0.2086,0.1850,Z Final BASE - 10 tweets - 1e-4
+2026-03-15 13:53:57,03_roberta.py,7494,0.7205,0.6240,0.1278,0.2122,0.1832,Z Final BASE - 10 tweets - 1e-4
+2026-03-15 13:54:34,03_roberta.py,9282,0.7178,0.6042,0.1206,0.2010,0.1698,Z Final BASE - 10 tweets - 1e-4
+2026-03-15 13:54:35,03_roberta.py,4088,0.7198,0.6320,0.1156,0.1955,0.1767,Z Final BASE - 10 tweets - 1e-4
+2026-03-15 13:54:40,03_roberta.py,5779,0.7182,0.6017,0.1267,0.2094,0.1734,Z Final BASE - 10 tweets - 1e-4
+2026-03-15 13:56:39,03_roberta.py,5809,0.7183,0.6120,0.1185,0.1985,0.1713,Z Final BASE - 10 tweets - 1e-4
+2026-03-15 13:56:52,03_roberta.py,1574,0.7210,0.6328,0.1252,0.2090,0.1846,Z Final BASE - 10 tweets - 1e-4
+2026-03-15 13:56:56,03_roberta.py,5228,0.7188,0.6277,0.1105,0.1879,0.1710,Z Final BASE - 10 tweets - 1e-4
+2026-03-15 13:57:22,03_roberta.py,2512,0.7224,0.6171,0.1508,0.2423,0.1971,Z Final BASE - 30 tweets - 1e-4
+2026-03-15 13:57:24,03_roberta.py,4977,0.7213,0.6111,0.1472,0.2373,0.1920,Z Final BASE - 30 tweets - 1e-4
+2026-03-15 13:59:10,03_roberta.py,3,0.7193,0.6210,0.1196,0.2005,0.1756,Z Final BASE - 30 tweets - 1e-4
+2026-03-15 13:59:41,03_roberta.py,5702,0.7202,0.6092,0.1386,0.2258,0.1850,Z Final BASE - 30 tweets - 1e-4
+2026-03-15 13:59:44,03_roberta.py,6104,0.7196,0.6317,0.1146,0.1940,0.1758,Z Final BASE - 30 tweets - 1e-4
+2026-03-15 14:00:34,03_roberta.py,465,0.7224,0.6345,0.1351,0.2227,0.1929,Z Final BASE - 30 tweets - 1e-4
+2026-03-15 14:00:52,03_roberta.py,1185,0.7183,0.6153,0.1157,0.1948,0.1704,Z Final BASE - 30 tweets - 1e-4
+2026-03-15 14:01:31,03_roberta.py,2511,0.7201,0.6368,0.1148,0.1946,0.1779,Z Final BASE - 30 tweets - 1e-4
+2026-03-15 14:13:20,03_roberta.py,9419,0.7198,0.6288,0.1185,0.1994,0.1778,Z Final BASE - 10 tweets - 1e-4
+2026-03-15 14:14:36,03_roberta.py,5228,0.7186,0.6190,0.1149,0.1938,0.1712,Z Final BASE - 30 tweets - 1e-4
+2026-03-15 14:17:28,03_roberta.py,770,0.7202,0.6289,0.1211,0.2032,0.1799,Z Final BASE - 30 tweets - 1e-4
+2026-03-15 19:40:19,03_roberta_weighted.py,5941,0.6673,0.4589,0.7257,0.5623,0.3368,WEIGHTED - 1e-4
+2026-03-15 19:41:55,03_roberta_weighted.py,6365,0.6647,0.4566,0.7290,0.5615,0.3351,WEIGHTED - 1e-4
+2026-03-15 19:42:55,03_roberta_weighted.py,5062,0.6790,0.4700,0.7060,0.5643,0.3430,WEIGHTED - 1e-4
+2026-03-15 19:43:32,03_roberta_weighted.py,3597,0.6789,0.4699,0.7067,0.5644,0.3431,WEIGHTED - 1e-4
+2026-03-15 19:47:10,03_roberta_weighted.py,30,0.6727,0.4640,0.7187,0.5639,0.3406,WEIGHTED - 1e-4
+2026-03-15 19:47:30,03_roberta_weighted.py,2832,0.6691,0.4607,0.7258,0.5637,0.3393,WEIGHTED - 1e-4
+2026-03-15 19:49:46,03_roberta_weighted.py,6214,0.6667,0.4584,0.7285,0.5627,0.3374,WEIGHTED - 1e-4
+2026-03-15 19:54:10,03_roberta_weighted.py,6005,0.6676,0.4591,0.7227,0.5615,0.3358,WEIGHTED - 1e-4
+2026-03-15 19:55:22,03_roberta_weighted.py,2131,0.6660,0.4578,0.7281,0.5621,0.3363,WEIGHTED - 1e-4
+2026-03-15 19:58:11,03_roberta_oversample.py,2085,0.6820,0.4731,0.7034,0.5657,0.3459,OVERSAMPLE - 1e-4
+2026-03-15 19:59:43,03_roberta_oversample.py,6657,0.6679,0.4598,0.7316,0.5647,0.3406,OVERSAMPLE - 1e-4
+2026-03-15 20:00:25,03_roberta_oversample.py,3193,0.6691,0.4606,0.7239,0.5630,0.3384,OVERSAMPLE - 1e-4
+2026-03-15 20:00:41,03_roberta_oversample.py,6974,0.6688,0.4605,0.7280,0.5642,0.3401,OVERSAMPLE - 1e-4
+2026-03-15 20:04:11,03_roberta_oversample.py,7390,0.6775,0.4688,0.7142,0.5660,0.3450,OVERSAMPLE - 1e-4
+2026-03-15 20:08:59,03_roberta_oversample.py,4098,0.6775,0.4687,0.7140,0.5659,0.3448,OVERSAMPLE - 1e-4
+2026-03-15 20:10:49,03_roberta_weighted.py,4674,0.6698,0.4613,0.7240,0.5636,0.3394,WEIGHTED - 1e-4
+2026-03-15 20:10:54,03_roberta_oversample.py,7522,0.6741,0.4655,0.7224,0.5662,0.3443,OVERSAMPLE - 1e-4
+2026-03-15 20:11:49,03_roberta_oversample.py,87,0.6594,0.4523,0.7429,0.5623,0.3352,OVERSAMPLE - 1e-4
+2026-03-15 20:16:40,03_roberta_oversample.py,5592,0.6603,0.4530,0.7406,0.5622,0.3352,OVERSAMPLE - 1e-4
+2026-03-15 20:22:34,03_roberta_oversample.py,1217,0.6823,0.4736,0.7070,0.5672,0.3481,OVERSAMPLE - 1e-4
+2026-03-17 15:53:00,03_roberta.py,4623,0.7233,0.6061,0.1719,0.2678,0.2064,lower dropout
+2026-03-17 16:18:14,03_roberta_oversample.py,8771,0.6721,0.4634,0.7199,0.5639,0.3404,dropout OVERSAMPLE - 1e-4
+2026-03-17 16:20:49,03_roberta_oversample.py,5194,0.6698,0.4612,0.7228,0.5631,0.3387,dropout OVERSAMPLE - 1e-4
+2026-03-17 16:21:14,03_roberta_oversample.py,8820,0.6784,0.4698,0.7170,0.5676,0.3475,dropout OVERSAMPLE - 1e-4
+2026-03-17 16:24:09,03_roberta_oversample.py,4383,0.6642,0.4561,0.7302,0.5615,0.3350,dropout OVERSAMPLE - 1e-4
+2026-03-17 16:27:05,03_roberta_oversample.py,7487,0.6677,0.4595,0.7298,0.5639,0.3394,dropout OVERSAMPLE - 1e-4
+2026-03-17 19:31:57,02_lstm.py,7767,0.5402,0.3695,0.7954,0.5046,0.2167,LSTM model trained on IAT features only
+2026-03-17 19:35:05,02_lstm.py,2447,0.7056,0.0000,0.0000,0.0000,0.0000,LSTM model trained on IAT features only // raw
+2026-03-17 19:35:16,02_lstm.py,8753,0.7056,0.0000,0.0000,0.0000,0.0000,LSTM model trained on IAT features only // raw
+2026-03-17 19:39:30,02_lstm.py,5005,0.7056,0.0000,0.0000,0.0000,0.0000,LSTM model trained on IAT features only // raw
+2026-03-17 20:03:41,02_lstm.py,661,0.5566,0.3761,0.7675,0.5048,0.2198,LSTM model trained on IAT features only
+2026-03-21 03:53:06,02_lstm.py,5649,0.5369,0.3682,0.7999,0.5042,0.2155,LSTM model 1000 trained on IAT features only // raw
+2026-03-22 20:59:38,01_rf.py,2304,0.7024,0.4957,0.6160,0.5493,0.3354,"balanced rf with engineered features, no scaling"
+2026-03-22 21:01:54,01_rf.py,877,0.7604,0.7754,0.2622,0.3918,0.3509,"imbalanced rf with engineered features, no scaling"
+2026-03-23 00:23:10,01_rf.py,919,0.7602,0.7788,0.2591,0.3888,0.3502,"imbalanced rf with engineered features, no scaling"
+2026-03-23 00:23:35,01_rf.py,865,0.7603,0.7773,0.2607,0.3905,0.3507,"imbalanced rf with engineered features, no scaling"
+2026-03-23 00:23:37,01_rf.py,8255,0.7600,0.7775,0.2590,0.3886,0.3495,"imbalanced rf with engineered features, no scaling"
+2026-03-23 00:49:02,01_rf.py,5601,0.7600,0.7776,0.2591,0.3887,0.3496,"imbalanced rf with engineered features, no scaling"
+2026-03-23 00:49:13,01_rf.py,7637,0.7603,0.7810,0.2583,0.3882,0.3506,"imbalanced rf with engineered features, no scaling"
+2026-03-23 00:49:27,01_rf.py,2076,0.7599,0.7759,0.2593,0.3887,0.3490,"imbalanced rf with engineered features, no scaling"
+2026-03-23 00:54:03,01_rf.py,256,0.7600,0.7779,0.2587,0.3882,0.3495,"imbalanced rf with engineered features, no scaling"
+2026-03-23 12:21:27,01_rf.py,2214,0.7012,0.4941,0.6180,0.5491,0.3344,"balanced rf with engineered features, no scaling"
+2026-03-23 17:36:38,01_rf.py,8708,0.6842,0.4739,0.6583,0.5511,0.3276,"rf with oversampling, engineered features, no scaling"
+2026-03-23 18:09:22,01_rf.py,2389,0.7016,0.4947,0.6176,0.5493,0.3349,BASE
+2026-03-23 19:09:53,01_rf.py,2663,0.6832,0.4700,0.5959,0.5255,0.2973,BASE - no text features
+2026-03-23 19:13:26,01_rf.py,3833,0.7077,0.5031,0.6004,0.5475,0.3370,BASE - top 15
+2026-03-23 19:13:30,01_rf.py,4086,0.6891,0.4729,0.4879,0.4803,0.2587,BASE - ratios
+2026-03-23 19:21:33,01_rf.py,6036,0.7087,0.5045,0.5928,0.5451,0.3352,BASE - top 10
+2026-03-23 20:05:22,01_rf.py,9216,0.6751,0.4583,0.5677,0.5071,0.2724,"BASE - log features only (no ratios, text metrics, or flags)"
+2026-03-23 20:39:51,01_rf.py,1959,0.6279,0.4106,0.6052,0.4892,0.2231,"BASE - flag features only (no ratios, text metrics, or log features)"
+2026-03-23 20:43:50,01_rf.py,3936,0.7097,0.5065,0.5436,0.5244,0.3162,BASE - text features
+2026-03-25 16:01:09,00_rf_classifier.py,8308,0.7255,0.5499,0.3730,0.4445,0.2800,"Meta-Classifier Stacking (Random Forest) // text,feature - ignore class weights"
+2026-03-25 16:02:50,00_meta_classifier.py,5499,0.7266,0.5312,0.6081,0.5670,0.3704,"Meta-Classifier Stacking lr // text,feature - ignore class weights"
+2026-03-25 16:30:26,00_rf_classifier.py,9162,0.7220,0.5420,0.3604,0.4329,0.2680,"Meta-Classifier Stacking (Random Forest) // text,feature - NONE"
+2026-03-25 16:33:25,00_meta_classifier.py,4721,0.7589,0.6581,0.3770,0.4793,0.3593,"Meta-Classifier Stacking lr // text,feature - NONE"
+2026-03-25 16:51:18,00_meta_classifier.py,771,0.6924,0.4843,0.6912,0.5695,0.3546,"Meta-Classifier Stacking lr // text,feature - balanced, weighted roberta"
+2026-03-25 16:52:27,00_rf_classifier.py,8750,0.7258,0.5510,0.3715,0.4438,0.2802,"Meta-Classifier Stacking (Random Forest) // text,feature - balanced, weighted roberta"
+2026-03-25 17:26:29,01_rf.py,4581,0.7077,0.5031,0.5988,0.5468,0.3363,BASE - top 15 features
+2026-03-25 17:47:30,00_meta_classifier.py,9911,0.7755,0.6722,0.4633,0.5486,0.4182,"final - top 15 features, no class weights, oversampler roberta"
+2026-03-25 18:19:51,00_meta_classifier.py,8209,0.7752,0.6695,0.4670,0.5502,0.4184,"final - top 15 features, no class weights, weighted roberta"
+2026-03-25 18:21:04,00_meta_classifier.py,5320,0.7770,0.6889,0.4421,0.5386,0.4178,"final - top 15 features, no class weights, bASW roberta"
+2026-03-25 18:25:16,00_meta_classifier.py,9685,0.7066,0.5013,0.6622,0.5706,0.3621,"final - top 15 features, balanced class weights, base roberta"
+2026-03-25 20:50:59,00_meta_classifier.py,1282,0.7059,0.5004,0.6946,0.5817,0.3757,"final - top 15 features, balanced class weights, oversample roberta"
+2026-03-25 20:53:04,00_meta_classifier.py,2667,0.7042,0.4983,0.6968,0.5811,0.3742,"final - top 15 features, balanced class weights, weighted roberta"
+2026-03-25 21:22:45,00_meta_classifier.py,2239,0.7047,0.4989,0.6956,0.5811,0.3744,"final - top 15 features, balanced class weights, ooversampled roberta, lstm"
+2026-03-25 21:30:28,00_meta_classifier.py,8239,0.7754,0.6722,0.4633,0.5485,0.4182,"final - top 15 features, NONE class weights, ooversampled roberta, lstm"
+2026-03-25 23:28:54,00_meta_classifier.py,6093,0.7047,0.4989,0.6956,0.5811,0.3744,"final - top 15 features, balanced class weights, oversampled roberta, lstm"
+2026-03-25 23:30:46,00_rf_classifier.py,2193,0.7491,0.6231,0.3741,0.4675,0.3342,"Meta-Classifier Stacking (Random Forest) // text,feature - balanced, weighted roberta, lstm"
+2026-03-25 23:32:45,00_meta_classifier.py,8550,0.7754,0.6722,0.4633,0.5485,0.4182,"final - top 15 features, NONE class weights, oversampled roberta, lstm"
+2026-03-25 23:34:46,00_rf_classifier.py,2072,0.7498,0.6255,0.3744,0.4684,0.3360,"Meta-Classifier Stacking (Random Forest) // text,feature - balanced, weighted roberta, lstm"
+2026-03-26 23:37:57,00_meta_classifier.py,6357,0.7755,0.6722,0.4633,0.5486,0.4182,"final - top 15 features, NONE class weights, oversampled roberta"
+2026-03-26 23:39:01,00_rf_classifier.py,9787,0.6076,0.3678,0.4628,0.4099,0.1235,"Meta-Classifier Random Forest // text,feature - balanced None, weighted roberta"
+2026-03-26 23:45:29,00_rf_classifier.py,4205,0.7349,0.5720,0.3952,0.4674,0.3077,"Meta-Classifier Random Forest // text,feature - balanced None, weighted roberta"
+2026-03-27 01:28:25,01_rf.py,6956,0.7532,0.7306,0.2566,0.3798,0.3249,NONE todo final BASE - top 15 features
+2026-03-27 01:29:17,00_meta_classifier.py,2353,0.7763,0.6912,0.4340,0.5332,0.4146,"final - top 15 features None weighted, NONE class weights, oversampled roberta"
+2026-03-27 01:54:17,02_lstm.py,7352,0.5343,0.3671,0.8031,0.5039,0.2145,"LSTM model 200 trained on IAT features only // raw, Final run"
+2026-03-27 15:04:02,01_rf.py,6746,0.7077,0.5030,0.5992,0.5469,0.3363,balanced todo final BASE - top 15 features
+2026-03-27 15:04:57,00_meta_classifier.py,5792,0.7752,0.6719,0.4626,0.5479,0.4175,"final - top 15 features, NONE class weights, oversampled roberta"
+2026-03-27 15:16:14,01_rf.py,8205,0.7067,0.5017,0.6008,0.5468,0.3356,location test
+2026-03-27 15:16:15,01_rf.py,2538,0.7077,0.5031,0.6019,0.5481,0.3376,location test
+2026-03-27 19:04:36,00_meta_classifier.py,5471,0.7752,0.6719,0.4626,0.5479,0.4175,"final - top 15 features, NONE class weights, oversampled roberta"
+2026-03-27 19:06:21,00_rf_classifier.py,8378,0.7344,0.5711,0.3938,0.4661,0.3063,"Meta-Classifier Random Forest // text,feature - balanced None, weighted roberta"
+2026-03-28 16:18:58,01_rf.py,4222,0.7091,0.5052,0.5954,0.5466,0.3370,fixed balanced todo final BASE - top 15 features
+2026-03-28 16:37:33,00_meta_classifier.py,9770,0.7751,0.6709,0.4635,0.5483,0.4174,"final - top 15 features, NONE class weights, oversampled roberta"
+2026-03-28 16:48:41,01_rf.py,6746,0.7093,0.5054,0.5939,0.5461,0.3366,fixed balanced todo final BASE - top 15 features
+2026-03-28 16:53:00,01_rf.py,9506,0.7097,0.5060,0.5936,0.5463,0.3372,fixed balanced todo final BASE - top 15 features
+2026-03-28 16:54:19,01_rf.py,7535,0.7082,0.5038,0.5967,0.5463,0.3361,fixed balanced todo final BASE - top 15 features
+2026-03-28 18:30:24,01_rf.py,1075,0.7530,0.7325,0.2540,0.3772,0.3241,fixed None todo final BASE - top 15 features
+2026-03-28 18:31:20,00_meta_classifier.py,2498,0.7768,0.6909,0.4378,0.5360,0.4166,"final - top 15 features, NONE class weights, oversampled roberta"
+2026-03-28 18:47:19,00_meta_classifier.py,7400,0.7768,0.6909,0.4378,0.5360,0.4166,"final - top 15 features, NONE class weights, oversampled roberta"
+2026-03-28 19:04:09,01_rf.py,7006,0.7099,0.5063,0.5950,0.5471,0.3381,fixed balanced final BASE - top 15 features TODO!
+2026-03-28 19:05:02,00_meta_classifier.py,6794,0.7754,0.6716,0.4640,0.5488,0.4182,"final - top 15 features, NONE class weights, oversampled roberta TODO!"
+2026-03-29 23:34:41,02_lstm.py,7130,0.5489,0.3729,0.7805,0.5047,0.2182,"LSTM model 200 trained on IAT features only // raw, Final run"
+2026-03-31 00:41:59,00_meta_classifier.py,4002,0.7754,0.6716,0.4640,0.5488,0.4182,"final - top 15 features, NONE class weights, oversampled roberta"
+2026-03-31 00:42:33,00_meta_classifier.py,3697,0.7754,0.6716,0.4640,0.5488,0.4182,"final - top 15 features, NONE class weights, oversampled roberta"
+2026-03-31 00:42:56,00_meta_classifier.py,7912,0.7754,0.6716,0.4640,0.5488,0.4182,"final - top 15 features, NONE class weights, oversampled roberta"
+2026-03-31 15:58:25,00_meta_classifier.py,3925,0.7754,0.6716,0.4640,0.5488,0.4182,"final - top 15 features, NONE class weights, oversampled roberta"
