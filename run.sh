@@ -12,6 +12,9 @@ cd $PBS_O_WORKDIR
 # load python module
 module add python/3.11.11-gcc-10.2.1
 
+
+### ^^^ Metacentrum-specific setup above, adjust as needed for other environments ^^^ ###
+
 # venv activation
 source venv/bin/activate
 
@@ -46,21 +49,23 @@ echo " -------------------------------------------------------------------------
     python src/00_meta_classifier.py
     python src/00_rf_classifier.py
 
-
 # RUN
 echo " -------------------------------------------------------------------------"
 
-    # python src/detect.py Charles_leclerc
-    # python src/detect.py dezo
-    # python src/detect.py elonmusk
-    # python src/detect.py NASA
-    # python src/detect.py prezidentpavel
+    # Ensemble inference (demo mode - uses pre-scraped data from ./demo/)
+    python src/bot_detector.py --target Charles_leclerc --mode demo
+    python src/bot_detector.py --target Cristiano --mode demo
+    python src/bot_detector.py --target NASA --mode demo
+    python src/bot_detector.py --target EarthquakesSF --mode demo
 
-    # python src/detect_rf.py Charles_leclerc
-    # python src/detect_rf.py dezo
-    # python src/detect_rf.py elonmusk
-    # python src/detect_rf.py NASA
-    # python src/detect_rf.py prezidentpavel
+    # For live scraping (not stored): add --mode live
+    # python src/bot_detector.py --target Charles_leclerc --mode live
+    
+    # With custom threshold:
+    # python src/bot_detector.py --target NASA --threshold 0.7
+    
+    # Verbose output (debug):
+    # python src/bot_detector.py --target NASA --verbose
 
 
 # UTILS
