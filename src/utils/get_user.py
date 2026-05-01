@@ -8,7 +8,7 @@ Topic: Detection of Fake Accounts on Social Media Networks
 
 Description:
     Utility module for extracting and retrieving user profile data from the TwiBot-22
-    dataset. Supports random selection and specific user lookup.
+    dataset.
 """
 
 import os
