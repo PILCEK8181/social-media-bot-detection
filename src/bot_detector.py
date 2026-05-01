@@ -16,14 +16,17 @@ USAGE:
 
 EXAMPLE:
     python bot_detector.py --target Charles_leclerc              # uses pre-scraped demo data
-    python bot_detector.py --target Charles_leclerc --mode live   # scrapes fresh data first
-    python bot_detector.py --target @suspect_user --threshold 0.7 --verbose
+    python bot_detector.py --target Charles_leclerc --mode live   # scrapes fresh data (not stored)
+    python bot_detector.py --target @suspect_user --threshold 0.7 --verbose  # with custom threshold and debug logging
 
 CONFIGURABLE PARAMETERS:
     --target: String - Target username (e.g., @elonmusk) or path to a batch file (required)
     --mode: String - "live" or "demo" (default: demo)
+              * demo: Uses pre-scraped data from ./demo/ directory
+              * live: Scrapes fresh data and performs analysis WITHOUT storing scraped data
     --threshold: Float - Probability threshold for binary classification (default: 0.5)
     --verbose: Flag - Enables detailed logging of the feature extraction process
+              * In live mode, shows debug info about temporary directory cleanup
 
 REQUIREMENTS:
     - Demo data files in ./demo/profile_<username>.json and ./tweets_<username>.json
@@ -85,6 +88,11 @@ import json
 import joblib
 import argparse
 import warnings
+import tempfile
+import shutil
+import logging
+import contextlib
+import io
 import numpy as np
 import pandas as pd
 import torch
@@ -97,6 +105,22 @@ from detect_roberta import BotDetectionModel, generate_embeddings as generate_ro
 
 # Suppress warnings
 warnings.filterwarnings('ignore')
+
+# Suppress all transformers and HF Hub messages
+os.environ['TRANSFORMERS_VERBOSITY'] = 'error'
+os.environ['HF_HUB_VERBOSITY'] = 'error'
+os.environ['TOKENIZERS_PARALLELISM'] = 'false'
+os.environ['HF_HUB_DISABLE_PROGRESS_BARS'] = '1'
+
+# Set logging to error level for verbose libraries
+logging.getLogger('transformers').setLevel(logging.ERROR)
+logging.getLogger('transformers.modeling_utils').setLevel(logging.ERROR)
+logging.getLogger('transformers.tokenization_utils_base').setLevel(logging.ERROR)
+logging.getLogger('huggingface_hub').setLevel(logging.ERROR)
+logging.getLogger('filelock').setLevel(logging.ERROR)
+
+# Suppress all root logger output
+logging.getLogger().setLevel(logging.ERROR)
 
 # Device configuration
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -120,10 +144,13 @@ Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
 # ============================================================================
 
 # Load the demo profile and tweets data 
-def load_profile_data(username: str) -> Tuple[Dict, List[Dict]]:
+def load_profile_data(username: str, data_dir: str = None) -> Tuple[Dict, List[Dict]]:
     
-    profile_path = os.path.join(DEMO_DIR, f'profile_{username}.json')
-    tweets_path = os.path.join(DEMO_DIR, f'tweets_{username}.json')
+    if data_dir is None:
+        data_dir = DEMO_DIR
+    
+    profile_path = os.path.join(data_dir, f'profile_{username}.json')
+    tweets_path = os.path.join(data_dir, f'tweets_{username}.json')
     
     if not os.path.exists(profile_path) or not os.path.exists(tweets_path):
         raise FileNotFoundError(
@@ -230,7 +257,7 @@ def combine_predictions(rf_prob: float, roberta_prob: float, meta_classifier) ->
 # Main Detection Pipeline
 # ============================================================================
 
-def detect_bot(username: str, threshold: float = 0.5, verbose: bool = False) -> Dict:
+def detect_bot(username: str, threshold: float = 0.5, verbose: bool = False, data_dir: str = None) -> Dict:
     if verbose:
         print("[INFO] Detailed logging enabled")
     
@@ -241,7 +268,7 @@ def detect_bot(username: str, threshold: float = 0.5, verbose: bool = False) -> 
     try:
         # Load data
         print("\n[INFO] Fetching timeline for @{username}...".format(username=username))
-        profile_data, tweets_data = load_profile_data(username)
+        profile_data, tweets_data = load_profile_data(username, data_dir=data_dir)
         if verbose:
             print(f"  [DEBUG] User: {profile_data['display_name']} (@{username})")
             print(f"  [DEBUG] Followers: {profile_data['followers_count']:,}")
@@ -345,7 +372,7 @@ def save_results(results: Dict, username: str):
     with open(output_file, 'w') as f:
         json.dump(results, f, indent=2)
     
-    print(f"[INFO] Result saved to {os.path.basename(output_file)}")
+    #print(f"[INFO] Result saved to {os.path.basename(output_file)}")
     return output_file
 
 
@@ -378,16 +405,30 @@ EXAMPLES:
     # Clean up username (remove @ if present)
     username = args.target.lstrip('@')
     
+    # Set up data directory for live mode
+    temp_dir = None
+    data_dir = DEMO_DIR
+    
     try:
         if args.mode == 'live':
             from scrape import scrape_user
-            scrape_user(username, output_dir=DEMO_DIR)
+            # Create temporary directory for live scrape
+            temp_dir = tempfile.mkdtemp(prefix='bot_detection_live_')
+            print(f"[INFO] Using temporary directory: {temp_dir}")
+            scrape_user(username, output_dir=temp_dir)
+            data_dir = temp_dir
         
-        results = detect_bot(username, threshold=args.threshold, verbose=args.verbose)
+        results = detect_bot(username, threshold=args.threshold, verbose=args.verbose, data_dir=data_dir)
         save_results(results, username)
     except Exception as e:
         print(f"\n[ERROR] {str(e)}")
         sys.exit(1)
+    finally:
+        # Clean up temporary directory if it was created for live mode (so it doesnt violate the "no data storage" requirement)
+        if temp_dir and os.path.exists(temp_dir):
+            shutil.rmtree(temp_dir)
+            if args.verbose:
+                print(f"[DEBUG] Cleaned up temporary directory: {temp_dir}")
 
 
 if __name__ == '__main__':
