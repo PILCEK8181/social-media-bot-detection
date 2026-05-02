@@ -101,7 +101,7 @@ def extract_profile_aggregate(obj):
         elif 'verified' in obj and current_profile_data['verified'] is False:
             current_profile_data['verified'] = obj.get('verified')
 
-        # Dig deeper
+        # Recursively search through nested objects for profile data
         for key, value in obj.items():
             extract_profile_aggregate(value)
             

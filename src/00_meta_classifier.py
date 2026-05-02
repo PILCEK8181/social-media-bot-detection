@@ -159,9 +159,7 @@ def main():
     
     # 3. EER & Histogram
     calculate_and_plot_eer(y_test, probs_ensemble, save_path=hist_path)
-    
-    # 4. Robustness TODO
-    
+        
     print("=" * 70 + "\n")
 
 if __name__ == "__main__":

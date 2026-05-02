@@ -29,7 +29,7 @@ tweet_file = random.choice(TWEET_FILES)
 print(f"Randomly selected: {os.path.basename(tweet_file)}")
 print(f"Scanning for a random user...")
 
-# Find a random user from the selected tweet file // maebe later TODO
+# Find a random user from the selected tweet file
 target_user_id = None
 collected_tweets = []
 

@@ -97,7 +97,7 @@ def load_labels_and_splits() -> Tuple[Dict[str, int], Dict[str, str]]:
 
 def load_tokenizer_and_model():
 
-    print("\n\Loading RoBERTa model and tokenizer...")
+    print("\nLoading RoBERTa model and tokenizer...")
 
     tokenizer = RobertaTokenizer.from_pretrained(MODEL_NAME)
     model = RobertaModel.from_pretrained(MODEL_NAME).to(DEVICE)
@@ -109,8 +109,8 @@ def load_tokenizer_and_model():
     return tokenizer, model
 
 
-#Extract tweets for users in label_map.
-# user_tweets: dict of user_id -> list of tweet texts
+# Extract tweets for users in label_map.
+# user_tweets: Dictionary mapping user_id -> list of tweet texts
 def extract_tweets_from_files(label_map: Dict[str, int]) -> Dict[str, List[str]]:
     print("\nExtracting tweets from JSON files...")
     
@@ -118,7 +118,7 @@ def extract_tweets_from_files(label_map: Dict[str, int]) -> Dict[str, List[str]]
     total_tweets = 0
     saved_tweets = 0
     
-    # Process each tweet file // tweet_i.json, i=0..8
+    # Process each tweet file (tweet_0.json through tweet_8.json)
     for i in range(9):
         tweet_file = os.path.join(DATA_DIR, f'tweet_{i}.json')
         if not os.path.exists(tweet_file):
@@ -131,7 +131,7 @@ def extract_tweets_from_files(label_map: Dict[str, int]) -> Dict[str, List[str]]
         
         try:
             with open(tweet_file, 'rb') as f:
-                #  ijson for streaming parsing to handle large files efficiently
+                # Use ijson for streaming parsing to handle large files efficiently
                 parser = ijson.items(f, 'item')
                 
                 # Process each tweet in the file
@@ -160,24 +160,24 @@ def extract_tweets_from_files(label_map: Dict[str, int]) -> Dict[str, List[str]]
             print(f"Error processing {tweet_file}: {e}")
             continue
     
-    # statistics
+    # Statistics
     users_with_tweets = sum(1 for tweets in user_tweets.values() if len(tweets) > 0)
     avg_tweets = saved_tweets / users_with_tweets if users_with_tweets > 0 else 0
     
-    print(f"\n Total tweets processed: {total_tweets:,}")
-    print(f" Tweets saved: {saved_tweets:,}")
-    print(f" Users with tweets: {users_with_tweets:,} / {len(user_tweets):,}")
+    print(f"\nTotal tweets processed: {total_tweets:,}")
+    print(f"Tweets saved: {saved_tweets:,}")
+    print(f"Users with tweets: {users_with_tweets:,} / {len(user_tweets):,}")
     print(f" Average tweets per user: {avg_tweets:.1f}")
     
     return user_tweets
 
-#Generate RoBERTa embeddings for a list of tweets.
+# Generate RoBERTa embeddings for a list of tweets.
 @torch.no_grad()
 def generate_embeddings(tweets: List[str],tokenizer,model,batch_size: int = BATCH_SIZE,max_length: int = MAX_LENGTH) -> np.ndarray:
     """
     Aggregates embeddings by averaging.
     
-    Dynamic padding: padding='longest' -> longest tweet in bathc
+    Dynamic padding: padding='longest' pads to the longest tweet in batch
     
     Returns:
         - embeddings: (768,) array - average embedding for all tweets
@@ -192,7 +192,7 @@ def generate_embeddings(tweets: List[str],tokenizer,model,batch_size: int = BATC
     for i in range(0, len(tweets), batch_size):
         batch_tweets = tweets[i:i+batch_size]
         
-        # Tokenize 
+        # Tokenize tweets
         encodings = tokenizer(
             batch_tweets,
             max_length=max_length,
@@ -244,7 +244,8 @@ def preprocess_embeddings(user_tweets: Dict[str, List[str]],label_map: Dict[str,
     for user_id in tqdm(label_map.keys(), desc="Generating embeddings"):
         tweets = user_tweets.get(user_id, [])
         
-        # Skip users without tweets TODO TODO
+        # Currently processes users without tweets with zero embeddings
+        # Uncomment below to skip users without any tweets
         # if not tweets:
         #     users_skipped += 1
         #     continue

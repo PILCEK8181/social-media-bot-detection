@@ -127,7 +127,7 @@ def generate_embeddings(bio: str, tweets: List[str]) -> Tuple[np.ndarray, np.nda
     
     with torch.no_grad():
         # 1. BIO EMBEDDING
-        if bio and bio.lower() != 'none': #TODO
+        if bio and bio.lower() != 'none':  # Validate bio is not empty/placeholder
             bio_enc = tokenizer(
                 bio, 
                 max_length=ROBERTA_MAX_LENGTH, 

@@ -40,7 +40,7 @@ TEMP_DIR = './temp'
 MODELS_DIR = './models'
 BATCH_SIZE = 128
 EPOCHS = 50
-LEARNING_RATE = 1e-4 #todo
+LEARNING_RATE = 1e-4  # Optimizer learning rate
 
 SEED = random.randint(1, 10000)  # Generate a random seed for reproducibility
 random.seed(SEED)
