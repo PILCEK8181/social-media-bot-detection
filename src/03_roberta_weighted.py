@@ -34,7 +34,6 @@ from datetime import datetime
 from utils.save_metrics import save_metrics
 import random
 
-from torch.utils.data import WeightedRandomSampler
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 TEMP_DIR = './temp'
@@ -175,32 +174,26 @@ class BotDetectionModel(nn.Module):
     def __init__(self, input_dim: int):
         super(BotDetectionModel, self).__init__()
         self.fc1 = nn.Linear(input_dim, 512)
-        # self.bn1 = nn.BatchNorm1d(512)
         self.dropout1 = nn.Dropout(0.5)
         
         self.fc2 = nn.Linear(512, 256)
-        # self.bn2 = nn.BatchNorm1d(256)
         self.dropout2 = nn.Dropout(0.3)
         
         self.fc3 = nn.Linear(256, 128)
-        # self.bn3 = nn.BatchNorm1d(128)
         self.dropout3 = nn.Dropout(0.2)
         
         self.output = nn.Linear(128, 2)
     
     def forward(self, x):
         x = self.fc1(x)
-        # x = self.bn1(x)
         x = torch.relu(x)
         x = self.dropout1(x)
         
         x = self.fc2(x)
-        # x = self.bn2(x)
         x = torch.relu(x)
         x = self.dropout2(x)
         
         x = self.fc3(x)
-        # x = self.bn3(x)
         x = torch.relu(x)
         x = self.dropout3(x)
         

@@ -21,34 +21,14 @@ Features:
     - Consolidates all raw user timestamps into a single CSV file
 """
 
-import json
-import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-from datetime import datetime
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics import (accuracy_score, precision_score, recall_score, 
-                             f1_score, roc_auc_score, confusion_matrix, 
-                             roc_curve, auc)
 import torch
-import torch.nn as nn
-import torch.optim as optim
-from torch.utils.data import TensorDataset, DataLoader
-import seaborn as sns
 import warnings
-
 
 import ijson
 import csv
 import os
 import gc
-
-from torch.nn.utils.rnn import pad_sequence
-
-from sklearn.metrics import (confusion_matrix, roc_curve, auc, 
-                             accuracy_score, precision_score, recall_score, f1_score, roc_auc_score)
-
 
 
 warnings.filterwarnings('ignore')

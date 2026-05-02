@@ -27,8 +27,6 @@ from utils.save_metrics import save_metrics
 import random
 
 import joblib
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 TEMP_DIR = './temp'
 MODELS_DIR = './models'
@@ -68,6 +66,9 @@ def main():
     df_val = df[df['split'] == 'val']
     df_test = df[df['split'] == 'test']
     
+    # FINAL FEATURES going into Meta-Classifier
+    # use only RF and Roberta probabilities as features for the meta-classifier, since LSTM performed poorly and may add noise
+    # its possible to change those features or include LSTM : features = ['prob_rf', 'prob_lstm', 'prob_roberta']
     features = ['prob_rf', 'prob_roberta']
     
     X_val = df_val[features]
