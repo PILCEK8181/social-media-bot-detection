@@ -27,12 +27,18 @@ from playwright.sync_api import sync_playwright
 import pandas as pd
 import json
 import os
+from pathlib import Path
+
+# Get the directory where this script is located
+SCRIPT_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = SCRIPT_DIR.parent
+DEMO_DIR = PROJECT_ROOT / 'demo'
 
 # CONFIG, set your own tokens here
 AUTH_TOKEN = "XXX"
 CT0_TOKEN = "XXX"
 
-TARGET_ACCOUNTS = ["Ahoj1", "Charles_leclerc", "elonmusk", "BarackObama", "JoeBiden", "BillGates", "ladygaga", "Cristiano", "rihanna", "KimKardashian"] 
+TARGET_ACCOUNTS = ["Charles_leclerc", "Cristiano", "EarthquakesSF", "NASA"] 
 
 captured_tweets = []
 current_profile_data = {} 
@@ -203,7 +209,11 @@ def _scrape_accounts(accounts, output_dir):
 
 
 #Scrape a single user's profile and tweets. Called by detectors in live mode.
-def scrape_user(username, output_dir='./demo'):
+def scrape_user(username, output_dir=None):
+    # Use project demo directory by default
+    if output_dir is None:
+        output_dir = str(DEMO_DIR)
+    
     print(f"\n[LIVE] Scraping data for @{username}...")
     _scrape_accounts([username], output_dir)
     
@@ -220,9 +230,9 @@ def scrape_user(username, output_dir='./demo'):
     
     print(f"[LIVE] Scraping complete for @{username}.")
 
-# batch scrape for all target accounts, saves to ../demo
+# batch scrape for all target accounts, saves to project demo folder
 def run_scraper():
-    _scrape_accounts(TARGET_ACCOUNTS, '../demo')
+    _scrape_accounts(TARGET_ACCOUNTS, str(DEMO_DIR))
 
 
 if __name__ == "__main__":
