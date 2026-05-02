@@ -2,9 +2,7 @@ venv/
 .env
 
 data/
-*.json
-*.csv
-
+output/
 models/
 
 temp/
@@ -12,7 +10,3 @@ temp/
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
-
-SLOP/
-
-ROBERTAOUT/
