@@ -101,7 +101,7 @@ def load_text_data(username: str) -> Tuple[str, List[str], str]:
         raise FileNotFoundError(f"Profile file not found: {profile_path}")
         
     # Extract Bio
-    with open(profile_path, 'r') as f:
+    with open(profile_path, 'r', encoding='utf-8') as f:
         profile = json.load(f)
     display_name = str(profile.get('name', '')).strip()
     bio = str(profile.get('description', '')).strip()
@@ -109,7 +109,7 @@ def load_text_data(username: str) -> Tuple[str, List[str], str]:
     # Extract Tweets (up to MAX_TWEETS)
     tweets_list = []
     if os.path.exists(tweets_path):
-        with open(tweets_path, 'r') as f:
+        with open(tweets_path, 'r', encoding='utf-8') as f:
             tweets_data = json.load(f)
         valid_tweets = [str(t.get('Text', '')).strip() for t in tweets_data if str(t.get('Text', '')).strip()]
         tweets_list = valid_tweets[:MAX_TWEETS]
@@ -237,8 +237,8 @@ def detect_bot(username: str) -> Dict:
 def save_results(results: Dict, username: str):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     out_file = os.path.join(OUTPUT_DIR, f"roberta_only_{username}_{timestamp}.json")
-    with open(out_file, 'w') as f:
-        json.dump(results, f, indent=2)
+    with open(out_file, 'w', encoding='utf-8') as f:
+        json.dump(results, f, indent=2, ensure_ascii=False)
     print(f"JSON results saved to: {out_file}")
 
 def main():
