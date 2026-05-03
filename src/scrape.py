@@ -181,7 +181,13 @@ def _scrape_accounts(accounts, output_dir):
                 df_tweets = df_tweets.head(20)
                 
                 tweets_filename = os.path.join(output_dir, f"tweets_{account}.json")
-                df_tweets.to_json(tweets_filename, orient='records', indent=2, date_format='iso')
+                df_tweets.to_json(
+                    tweets_filename,
+                    orient='records',
+                    indent=2,
+                    date_format='iso',
+                    force_ascii=False
+                )
                 print(f"SUCCESS! Saved {len(df_tweets)} newest tweets to {tweets_filename}.")
             else:
                 print(f"No tweets found for {account}.")

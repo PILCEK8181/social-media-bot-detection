@@ -160,7 +160,7 @@ def load_profile_data(username: str, data_dir: str = None) -> Tuple[Dict, List[D
         )
     
     # Load profile
-    with open(profile_path, 'r') as f:
+    with open(profile_path, 'r', encoding='utf-8') as f:
         profile = json.load(f)
     
     metrics = profile.get('public_metrics', {})
@@ -178,7 +178,7 @@ def load_profile_data(username: str, data_dir: str = None) -> Tuple[Dict, List[D
     }
     
     # Load tweets
-    with open(tweets_path, 'r') as f:
+    with open(tweets_path, 'r', encoding='utf-8') as f:
         tweets_data = json.load(f)
     
     # Sort by date
