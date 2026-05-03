@@ -91,8 +91,6 @@ import warnings
 import tempfile
 import shutil
 import logging
-import contextlib
-import io
 import numpy as np
 import pandas as pd
 import torch
@@ -100,7 +98,7 @@ from pathlib import Path
 from datetime import datetime, timezone
 from typing import Dict, List, Tuple
 
-from detect_rf import TOP_15_FEATURES, predict_rf
+from detect_rf import predict_rf
 from detect_roberta import BotDetectionModel, generate_embeddings as generate_roberta_embeddings
 
 # Suppress warnings
@@ -126,10 +124,13 @@ logging.getLogger().setLevel(logging.ERROR)
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Paths
-DEMO_DIR = './demo'
-MODELS_DIR = './models'
-OUTPUT_DIR = './output'
-TEMP_DIR = './temp'
+PROJECT_ROOT = Path(__file__).parent.parent.resolve()
+
+DEMO_DIR = PROJECT_ROOT / 'demo'
+MODELS_DIR = PROJECT_ROOT / 'models'
+OUTPUT_DIR = PROJECT_ROOT / 'output'
+TEMP_DIR = PROJECT_ROOT / 'temp'
+
 
 # Model paths
 RF_MODEL_PATH = os.path.join(MODELS_DIR, '01_rf.joblib')
@@ -204,6 +205,7 @@ def extract_rf_features(profile_data: Dict) -> Dict:
     username = profile_data['username']
     description = profile_data['bio']
     
+    # Top 15 features based on Gini importance from 01_rf.py
     features = {
         'log_followers_count': np.log1p(followers),
         'log_tweet_count': np.log1p(tweets),

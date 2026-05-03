@@ -35,9 +35,11 @@ from typing import Dict
 warnings.filterwarnings('ignore')
 
 # Paths
-DEMO_DIR = './demo'
-MODELS_DIR = './models'
-OUTPUT_DIR = './output'
+PROJECT_ROOT = Path(__file__).parent.parent.resolve()
+
+DEMO_DIR = PROJECT_ROOT / 'demo'
+MODELS_DIR = PROJECT_ROOT / 'models'
+OUTPUT_DIR = PROJECT_ROOT / 'output'
 
 # Model path
 RF_MODEL_PATH = os.path.join(MODELS_DIR, '01_rf.joblib')

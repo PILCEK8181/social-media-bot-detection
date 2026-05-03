@@ -38,9 +38,11 @@ DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"[*] Device: {DEVICE}")
 
 # Paths
-DEMO_DIR = './demo'
-MODELS_DIR = './models'
-OUTPUT_DIR = './output'
+PROJECT_ROOT = Path(__file__).parent.parent.resolve()
+
+DEMO_DIR = PROJECT_ROOT / 'demo'
+MODELS_DIR = PROJECT_ROOT / 'models'
+OUTPUT_DIR = PROJECT_ROOT / 'output'
 
 # Model paths
 ROBERTA_MODEL_PATH = os.path.join(MODELS_DIR, '03roberta_oversample.pth')
