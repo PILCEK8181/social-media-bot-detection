@@ -174,18 +174,18 @@ def generate_embeddings(bio: str, tweets: List[str]) -> Tuple[np.ndarray, np.nda
 def detect_bot(username: str) -> Dict:
     print(f"\n{'='*70}\nBOT DETECTION (RoBERTa ONLY) FOR USER: @{username}\n{'='*70}")
     
-    # 1. Load Data
+    # Load Data
     print("\nLoading text data...")
     bio, tweets, display_name = load_text_data(username)
     print(f"  User: {display_name} (@{username})")
     print(f"  Bio length: {len(bio)} chars")
     print(f"  Tweets loaded: {len(tweets)}")
     
-    # 2. Generate Embeddings
+    # Generate Embeddings
     print("Generating RoBERTa embeddings (this might take a few seconds)...")
     bio_emb, tweets_emb = generate_embeddings(bio, tweets)
     
-    # 3. Load Custom Classification Model
+    # Load Custom Classification Model
     print("Loading trained classification model...")
     if not os.path.exists(ROBERTA_MODEL_PATH):
         raise FileNotFoundError(f"Model missing at: {ROBERTA_MODEL_PATH}")
@@ -201,10 +201,9 @@ def detect_bot(username: str) -> Dict:
         
     clf_model.eval()
     
-    # 4. Prediction
+    # Prediction
     print("Calculating bot probability...")
     
-    # CRITICAL FIX: Order MUST be [Tweets, Bio] as per the training script!
     combined_features = np.concatenate([tweets_emb, bio_emb])
     
     X = torch.from_numpy(combined_features).float().unsqueeze(0).to(DEVICE)

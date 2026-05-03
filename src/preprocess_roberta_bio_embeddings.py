@@ -30,7 +30,6 @@ from pathlib import Path
 from tqdm import tqdm
 from typing import Dict, List, Tuple
 import gc
-import argparse
 from datetime import datetime
 
 from transformers import RobertaTokenizer, RobertaModel

@@ -130,7 +130,7 @@ def align_embeddings(tweet_emb, tweet_ids, tweet_labels, tweet_splits,
     aligned_tweet_emb = tweet_emb[tweet_indices]
     aligned_bio_emb = bio_emb[bio_indices]
     
-    # concat
+    # concatanate
     combined_emb = torch.cat([aligned_tweet_emb, aligned_bio_emb], dim=1)
     
     print(f"Aligned embeddings shape: {combined_emb.shape}")
@@ -143,7 +143,7 @@ def align_embeddings(tweet_emb, tweet_ids, tweet_labels, tweet_splits,
 def create_dataloaders(embeddings, labels, splits, batch_size=BATCH_SIZE):
     print("\nCreating dataloaders...")
     
-    # split indexes
+    # Split indexes
     train_mask = np.array([s == 'train' for s in splits])
     val_mask = np.array([s == 'val' for s in splits])
     test_mask = np.array([s == 'test' for s in splits])
@@ -154,13 +154,13 @@ def create_dataloaders(embeddings, labels, splits, batch_size=BATCH_SIZE):
     
     print(f"  Train: {len(train_indices)}, Val: {len(val_indices)}, Test: {len(test_indices)}")
     
-    # datasets
+    # Datasets 
     train_dataset = TensorDataset(embeddings[train_indices], labels[train_indices])
     val_dataset = TensorDataset(embeddings[val_indices], labels[val_indices])
     test_dataset = TensorDataset(embeddings[test_indices], labels[test_indices])
     
     
-    # --- SEMPLER SETTING ---
+    # --- SAMPLER SETTING ---
     
     # Calculated class distribution in the training set
     train_labels_np = labels[train_indices].numpy()
@@ -186,7 +186,7 @@ def create_dataloaders(embeddings, labels, splits, batch_size=BATCH_SIZE):
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
     
-    # --- SEMPLER SETTING ---
+    # --- SAMPLER SETTING ---
 
 
     print(f"Dataloaders created (Balanced Sampling Active)")
@@ -227,7 +227,7 @@ class BotDetectionModel(nn.Module):
         x = self.output(x)
         return x
 
-
+# Train one epoch
 def train_epoch(model, loader, optimizer, criterion, device):
     model.train()
     total_loss = 0
@@ -246,7 +246,7 @@ def train_epoch(model, loader, optimizer, criterion, device):
     
     return total_loss / len(loader)
 
-
+# Evaluation function
 def evaluate(model, loader, criterion, device):
     model.eval()
     total_loss = 0
@@ -296,13 +296,13 @@ def train_model(model, train_loader, val_loader, device, epochs=EPOCHS, lr=LEARN
         if val_f1 > best_f1:
             best_f1 = val_f1
             best_epoch = epoch 
-            # best_model_state = model.state_dict().copy()
+            # Correct way to save model state 
             best_model_state = {k: v.cpu() for k, v in model.state_dict().items()}
         
         if (epoch + 1) % 2 == 0:
             print(f"  Epoch {epoch+1}/{epochs} - Train Loss: {train_loss:.4f}, Val Loss: {val_loss:.4f}, Val F1: {val_f1:.4f}")
     
-    # load the best model state
+    # Load the best model state before returning
     if best_model_state:
         model.load_state_dict(best_model_state)
     

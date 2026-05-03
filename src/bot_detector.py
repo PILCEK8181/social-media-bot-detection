@@ -17,10 +17,10 @@ USAGE:
 EXAMPLE:
     python bot_detector.py --target Charles_leclerc              # uses pre-scraped demo data
     python bot_detector.py --target Charles_leclerc --mode live   # scrapes fresh data (not stored)
-    python bot_detector.py --target @suspect_user --threshold 0.7 --verbose  # with custom threshold and debug logging
+    python bot_detector.py --target suspect_user --threshold 0.7 --verbose  # with custom threshold and debug logging
 
 CONFIGURABLE PARAMETERS:
-    --target: String - Target username (e.g., @elonmusk) or path to a batch file (required)
+    --target: String - Target username (e.g., elonmusk)
     --mode: String - "live" or "demo" (default: demo)
               * demo: Uses pre-scraped data from ./demo/ directory
               * live: Scrapes fresh data and performs analysis WITHOUT storing scraped data
@@ -66,7 +66,7 @@ OUTPUT SPECIFICATION:
     Console Output:
         - Human-readable summary printed to stdout
         - Classification label (BOT or HUMAN)
-        - Confidence score (probability 0.0-1.0)
+        - Confidence score (probability of being a bot, 0.0-1.0)
         - Individual modality scores (Metadata, Text, Temporal)
     
     Structured Output (JSON):

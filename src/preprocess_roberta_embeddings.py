@@ -218,16 +218,9 @@ def generate_embeddings(tweets: List[str],tokenizer,model,batch_size: int = BATC
     return mean_embedding.astype(np.float32)
 
 
+# Generate embeddings for all users with checkpointing.
 def preprocess_embeddings(user_tweets: Dict[str, List[str]],label_map: Dict[str, int],split_map: Dict[str, str],tokenizer,model,checkpoint_dir: str = None ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, List[str]]:
-    """
-    Generate embeddings for all users with checkpointing.
-    
-    Returns:
-        - embeddings: (num_users, 768) array
-        - labels: (num_users,) array
-        - user_ids: (num_users,) array
-        - splits: (num_users,) array
-    """
+
     print("\nGenerating embeddings...")
     if checkpoint_dir:
         Path(checkpoint_dir).mkdir(parents=True, exist_ok=True)
@@ -281,7 +274,6 @@ def preprocess_embeddings(user_tweets: Dict[str, List[str]],label_map: Dict[str,
     splits = np.array(all_splits)
     
     print(f"\nProcessed {users_processed} users")
-    # print(f"Skipped {users_skipped} users (no tweets)")
     print(f"Embeddings shape: {embeddings.shape}")
     print(f"Splits distribution: {dict(zip(*np.unique(splits, return_counts=True)))}")
     
@@ -375,9 +367,9 @@ def main():
     # Save embeddings
     save_embeddings(embeddings, labels, user_ids, splits, args.output)
     
-    print("\n" + "=" * 60)
+    print("\n" + "=" * 70)
     print("✓ Preprocessing completed successfully!")
-    print("=" * 60)
+    print("=" * 70)
 
 
 if __name__ == '__main__':

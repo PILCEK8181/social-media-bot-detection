@@ -31,8 +31,7 @@ from datetime import datetime
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import (accuracy_score, precision_score, recall_score, 
-                             f1_score, matthews_corrcoef, roc_auc_score, 
-                             confusion_matrix, classification_report)
+                             f1_score, matthews_corrcoef,confusion_matrix)
 
 from utils.save_metrics import save_metrics
 
@@ -82,7 +81,7 @@ def load_raw_users():
     print(f"  Loaded {len(raw_data)} raw users")
     return raw_data
 
-
+# Extract features from user metadata entry
 def extract_user_features(entry):
 
     metrics = entry.get('public_metrics', {})

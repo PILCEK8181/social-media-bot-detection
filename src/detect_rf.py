@@ -140,16 +140,16 @@ def predict_rf(rf_model, features: Dict) -> float:
 def detect_bot(username: str) -> Dict:
     print(f"\n{'='*70}\nBOT DETECTION (RF ONLY) FOR USER: @{username}\n{'='*70}")
     
-    # 1. Load Data
+    # Load Data
     print("\nLoading profile data...")
     profile_data = load_profile_data(username)
     print(f"  User: {profile_data['display_name']} (@{username}) | Followers: {profile_data['followers_count']:,}")
     
-    # 2. Extract Features
+    # Extract Features
     print("Extracting Random Forest features...")
     rf_features = extract_rf_features(profile_data)
     
-    # 3. Load Models & Predict
+    # Load Models & Predict
     print("Loading RF model and predicting...")
     
     if not os.path.exists(RF_MODEL_PATH):

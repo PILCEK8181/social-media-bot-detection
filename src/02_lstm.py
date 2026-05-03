@@ -61,6 +61,7 @@ print(f"Seed: {SEED}")
 print("=" * 70)
 
 
+# Load timestamps and prepare IAT sequences
 def load_and_prepare_iat_data():
     print("\nLoading data...")
     
@@ -175,7 +176,7 @@ def load_and_prepare_iat_data():
     
     return train_loader, val_loader, test_loader, pos_weight, all_user_ids, val_mask, test_mask, y
 
-
+# BILSTM with attention for IAT sequences
 class IAT_LSTM_Model(nn.Module):
     
     def __init__(self, input_size=1, hidden_size=128, num_layers=2, bidirectional=True):
@@ -279,10 +280,10 @@ def main():
     
     Path(MODELS_DIR).mkdir(parents=True, exist_ok=True)
     
-    # load data
+    # Load data
     train_loader, val_loader, test_loader, pos_weight, all_user_ids, val_mask, test_mask, y_labels = load_and_prepare_iat_data()
     
-    # model
+    # Model initialization
     model = IAT_LSTM_Model(
         hidden_size=HIDDEN_SIZE,
         num_layers=NUM_LAYERS,
@@ -290,9 +291,9 @@ def main():
     ).to(DEVICE)
     
     print(f"\nModel architecture:")
-    print(f"Input dim: 1 (IAT)")
     print(f"BiLSTM (hidden: {HIDDEN_SIZE}, layers: {NUM_LAYERS}) -> Attention -> 64 -> 1")
     
+    # Training setup
     criterion = nn.BCEWithLogitsLoss(pos_weight=pos_weight)
     optimizer = optim.AdamW(model.parameters(), lr=LEARNING_RATE, weight_decay=1e-3)
     scheduler = optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, T_0=10, T_mult=2)
@@ -302,6 +303,7 @@ def main():
     best_model_state = None
     epochs_no_improve = 0
     
+    # Training loop with early stopping
     for epoch in range(EPOCHS):
         train_loss = train_epoch(model, train_loader, optimizer, criterion, DEVICE)
         val_loss, val_acc, val_f1, _, _ = evaluate(model, val_loader, criterion, DEVICE)
@@ -333,9 +335,11 @@ def main():
     print("\n" + "=" * 70)
     print("TEST SET RESULTS")
     print("=" * 70)
+
     prec = precision_score(test_labels, test_preds, zero_division=0)
     rec = recall_score(test_labels, test_preds, zero_division=0)
     mcc = matthews_corrcoef(test_labels, test_preds)
+
     print(f"Accuracy:  {test_acc:.4f}")
     print(f"F1 Score:  {test_f1:.4f}")
     print(f"Precision: {prec:.4f}")
@@ -349,7 +353,7 @@ def main():
     torch.save(model.state_dict(), model_path)
     print(f"\nModel saved to {model_path}")
 
-    # probabilities for ensemble
+    # Save predictions for ensemble
     print("\nExtracting probabilities for ensemble...")
     val_uids = np.array(all_user_ids)[val_mask]
     test_uids = np.array(all_user_ids)[test_mask]
