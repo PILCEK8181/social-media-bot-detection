@@ -34,7 +34,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent
 DEMO_DIR = PROJECT_ROOT / 'demo'
 
-# CONFIG, set your own tokens here
+# CONFIG, set your own tokens here, checkout ../doc/scraper.md for details
 AUTH_TOKEN = "XXX"
 CT0_TOKEN = "XXX"
 
@@ -129,10 +129,15 @@ def handle_response(response):
 def _scrape_accounts(accounts, output_dir):
     global CURRENT_TARGET
     
+    # Check for placeholder tokens
+    if AUTH_TOKEN == "XXX" or CT0_TOKEN == "XXX":
+        print("WARNING: AUTH_TOKEN or CT0_TOKEN is set to 'XXX'. Please update with valid Twitter/X authentication tokens in scrape.py before scraping.")
+        return
+    
     os.makedirs(output_dir, exist_ok=True)
     
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch(headless=False) # Set to True to run without opening a browser window
         context = browser.new_context(
             user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             viewport={"width": 1280, "height": 720}
