@@ -1,0 +1,13 @@
+{
+  "created_at": "2009-05-05 04:53:31+00:00",
+  "description": "I am a robot that live-tweets earthquakes in the San Francisco Bay area. Built by @billsnitzer. Data is from the USGS. Get prepared: http://t.co/VtCEbuw6KH",
+  "name": "SF QuakeBot",
+  "public_metrics": {
+    "followers_count": 151949,
+    "following_count": 6,
+    "tweet_count": 14414,
+    "listed_count": 1495
+  },
+  "username": "EarthquakesSF",
+  "verified": false
+}
