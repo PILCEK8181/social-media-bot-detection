@@ -15,10 +15,8 @@ import os
 import csv
 from datetime import datetime
 
+# Saves metrics to a CSV file, appending if it already exists
 def save_metrics(filename: str, seed: int, acc: float, prec: float, recall: float, f1: float, mcc: float, note: str = "", output_csv: str = "./results/results.csv"):
-    """
-    Saves model evaluation metrics to a CSV file. 
-    """
     # Check if file exists to determine if we need to write headers
     file_exists = os.path.isfile(output_csv)
     
