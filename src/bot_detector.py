@@ -389,12 +389,12 @@ def main():
         epilog='''
 EXAMPLES:
   %(prog)s --target Charles_leclerc
-  %(prog)s --target @suspect_user --mode live --threshold 0.7
-  %(prog)s --target @suspect_user --threshold 0.7 --verbose
+  %(prog)s --target Cristiano --mode live --threshold 0.7
+  %(prog)s --target NASA --threshold 0.7 --verbose
         ''')
     
     parser.add_argument('--target', required=True, 
-                        help='Target username (e.g., @elonmusk) or path to a batch file')
+                        help='Target username (e.g., elonmusk)')
     parser.add_argument('--mode', choices=['demo', 'live'], default='demo',
                         help='demo = use existing data in ./demo, live = scrape fresh data first (default: demo)')
     parser.add_argument('--threshold', type=float, default=0.5,

@@ -12,7 +12,7 @@ The behavior of the inference engine is highly customizable to accommodate diffe
 
 | Argument | Type | Description |
 | :--- | :--- | :--- |
-| `--target` | String | The target username to analyze (e.g., `@elonmusk`). The leading `@` symbol is optional. |
+| `--target` | String | The target username to analyze (e.g., `elonmusk`). Without the leading `@` symbol. |
 | `--mode` | String | Execution mode. Accepts either `live` (initiates real-time scraping) or `demo` (utilizes local offline files). |
 | `--threshold` | Float | Probability threshold for the final binary classification. Defaults to `0.5`. Adjusting this allows the user to prioritize precision (higher threshold) or recall (lower threshold). |
 | `--verbose` | Flag | If provided, enables detailed logging of the internal feature extraction process, dynamic calculations, and intermediate model artifact loading. |
@@ -61,7 +61,7 @@ This command initiates a real-time query against the platform for a specific use
 
 **Command:**
 ```bash
-python bot_detector.py --mode live --target @suspect_user --threshold 0.7
+python bot_detector.py --mode live --target suspect_user --threshold 0.7
 ```
 
 **Expected Output:**
@@ -85,5 +85,5 @@ This command tests the pipeline locally using the pre-downloaded files in the `d
 
 **Command:**
 ```bash
-python bot_detector.py --mode demo --target @sample_user --verbose
+python bot_detector.py --mode demo --target sample_user --verbose
 ```
