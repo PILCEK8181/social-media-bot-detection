@@ -21,7 +21,7 @@ Tests:
 import pandas as pd
 import os
 
-# CSV file paths
+# CSV file path
 CSV_PATH = ['temp/processed_timestamps.csv']
 
 for path in CSV_PATH:
