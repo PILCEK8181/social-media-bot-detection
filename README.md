@@ -223,7 +223,7 @@ python src/00_meta_classifier.py
 
 ## Demo/Testing with Demo Profiles
 
-### Step 1: Run Detection on Demo Accounts
+#### Run Detection on Demo Accounts
 
 Install Playwright browsers:
 
@@ -256,7 +256,7 @@ python src/bot_detector.py --mode demo --target Charles_Leclerc
 
 4. Outputs results to `output/bot_detection_*_timestamp.json`
 
-### Step 2: Analyze Results
+#### Analyze Results
 
 Example output structure:
 ```json
@@ -432,6 +432,8 @@ cat results/results.csv
 ls -t output/bot_detection_*.json | head -5
 ```
 
+**Note:** This is the main pipeline for reproducing the final results. Other files like `00_rf_classifier.py` and `detect_*.py` are used for ablation studies and individual model testing and are present for completeness, but the above steps will reproduce the core results as presented in the paper.
+
 **Estimated Total Runtime:**
 - Preprocessing: ~30 hours (GPU dependent)
 - Model Training: ~2-4 hours (depends on GPU availability)
@@ -440,7 +442,7 @@ ls -t output/bot_detection_*.json | head -5
 
 ---
 
-## Speed Guide
+# Speed Guide
 
 Quick reference for running the project in the correct order.
 

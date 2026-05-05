@@ -37,7 +37,7 @@ Bot detection results and outputs:
 ## results/
 Evaluation results:
 - `metrics.md` - Performance metrics
-- `results.csv` - Tabular results data
+- `results.csv` - Tabular results data from individual model runs and performance evaluations. (generated on each model run)
 
 ## src/
 Source code directory containing all Python scripts:
