@@ -1,10 +1,8 @@
 # X (Twitter) GraphQL Interceptor Scraper
 
-**Author:** xzacekp00 Patrik Žáček  
-**Institution:** BUT FIT (Brno University of Technology, Faculty of Information Technology)  
-**Thesis Type:** Bachelor's Thesis 2026  
-**Topic:** Detection of Fake Accounts on Social Media Networks  
-**Last Updated:** May 1, 2026
+Patrik Žáček - xzacekp00
+BUT FIT (Brno University of Technology, Faculty of Information Technology) 
+Bachelor's Thesis 2026 - Detection of Fake Accounts on Social Media Networks 
 
 ---
 

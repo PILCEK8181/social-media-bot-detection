@@ -1,5 +1,9 @@
 # Directory Structure Overview
 
+Patrik Žáček - xzacekp00
+BUT FIT (Brno University of Technology, Faculty of Information Technology) 
+Bachelor's Thesis 2026 - Detection of Fake Accounts on Social Media Networks 
+
 This document provides a brief overview of the project directory structure for the Social Media Bot Detection system.
 
 ## Root Level Files
@@ -38,18 +42,18 @@ Evaluation results:
 ## src/
 Source code directory containing all Python scripts:
 - `00_meta_classifier.py` - Meta-classifier implementation
-- `00_rf_classifier.py` - Random Forest classifier
-- `01_rf.py` - Random Forest training script
+- `00_rf_classifier.py` - Random Forest classifier (used in ablation studies)
+- `01_rf.py` - Random Forest model implementation
 - `02_lstm.py` - LSTM model implementation
 - `03_roberta*.py` - RoBERTa model variants
-- `bot_detector.py` - Main bot detection script
+- `bot_detector.py` - **Main** bot detection script
 - `detect_rf.py`, `detect_roberta.py` - Detection scripts for specific models
-- `preprocess_*.py` - Data preprocessing scripts
+- `preprocess_*.py` - Data preprocessing scripts (Timestamps, Text)
 - `scrape.py` - Data scraping script
-- `utils/` - Utility modules:
+- `utils/` - Utility modules and scripts:
   - `evaluation.py` - Evaluation functions
-  - `get_tweets.py` - Tweet retrieval utilities
-  - `get_user.py` - User data utilities
+  - `get_tweets.py` - Tweet retrieval script
+  - `get_user.py` - User profile retrieval script
   - `save_metrics.py` - Metrics saving functions
 
 
