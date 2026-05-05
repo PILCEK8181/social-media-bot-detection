@@ -119,13 +119,13 @@ python src/scrape.py
 * **Headed Mode:** The Playwright instance is set to `headless=False` by design. This makes the browser visible, which helps avoid basic headless-browser detection scripts used by Arkose Labs on X.
 * **Cookie Expiration:** The `auth_token` and `ct0` cookies will eventually expire or be invalidated by X (typically if you log out manually from the browser where you extracted them). If the script fails to load the timelines, you will need to extract fresh cookies.
 * **Rate Limiting:** Introduce deliberate delays between profile navigations (already included in the script via `page.wait_for_timeout()`). Navigating through hundreds of profiles too rapidly will result in X temporarily rate-limiting the account associated with the cookies.
-* **Data Privacy:** In live mode, scraped data is not persisted to disk by `bot_detector.py`; temporary files are created and deleted after analysis.
+* **Data Privacy:** In live mode, scraped data is not persisted to disk by `bot_detector.py`, temporary files are created and deleted after analysis.
 
 ---
 
 ## Status
 
-**Last Tested:** May 1, 2026  
+**Last Tested:** May 5th, 2026  
 **Status:** Production-ready, integrated with bot detection ensemble  
 **Integration Points:**
 - Used by `bot_detector.py` with `--mode live` flag

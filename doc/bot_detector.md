@@ -21,6 +21,8 @@ Also make sure to install the Playwright browsers if you intend to use the live 
 playwright install
 ```
 
+When running live mode, user needs to fill in tokens in `src/scrape.py` for authentication bypass (check `scraper.md`). For demo mode, no additional setup is required as it relies on pre-downloaded data files.
+
 ## Configurable Parameters
 
 The behavior of the inference engine is highly customizable to accommodate different analytical needs. The tool accepts the following command-line arguments:
