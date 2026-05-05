@@ -70,6 +70,13 @@ Used to store preprocessed data and expert model predictions.
 
 Used to store trained machine learning models, including the Random Forest and RoBERTa variants.
 
+- `01_rf.joblib` - Random Forest model file
+- `02_lstm.pth` - LSTM model file
+- `03roberta_oversample.pth` - RoBERTa model file (oversampled version)
+- `03roberta.pth` - RoBERTa model file (original version)
+- `03roberta_weighted.pth` - RoBERTa model file (weighted version)
+- `meta_classifier.joblib` - Meta-classifier model file
+
 ## output/
 
 Contains the results of bot detection analyses, including JSON files with detailed classification outputs for various accounts.
