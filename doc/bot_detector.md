@@ -5,6 +5,21 @@ BUT FIT (Brno University of Technology, Faculty of Information Technology)
 Bachelor's Thesis 2026 - Detection of Fake Accounts on Social Media Networks 
 
 The `bot_detector.py` inference engine is a command-line interface designed for both real-time and offline analysis of Twitter/X accounts. The tool processes a target account through a multi-modal machine learning architecture, calculating a composite probability score to determine if the account exhibits structural and behavioral patterns consistent with automated bots.
+## Environment Setup
+
+Before running the bot detection script, ensure that you have the necessary Python environment set up. You can create a virtual environment and install the required dependencies using the following commands:
+
+```bash
+python -m venv bot_detector_env
+source bot_detector_env/bin/activate  # On Windows: bot_detector_env\Scripts\activate
+pip install -r requirements.txt
+```
+
+Also make sure to install the Playwright browsers if you intend to use the live scraping functionality:
+
+```bash
+playwright install
+```
 
 ## Configurable Parameters
 
@@ -18,7 +33,7 @@ The behavior of the inference engine is highly customizable to accommodate diffe
 | `--verbose` | Flag | If provided, enables detailed logging of the internal feature extraction process, dynamic calculations, and intermediate model artifact loading. |
 
 ### Note on Demo Mode Execution
-When executing the script utilizing `--mode demo`, the live scraping pipeline is completely bypassed. This mode requires the presence of locally cached data files for the specified target user. These files must be located inside the `demo/` directory of this repository. This mode is specifically designed for testing the inference engine without relying on external network requests or facing potential API rate limits.
+When executing the script utilizing `--mode demo`, the live scraping pipeline is completely bypassed. This mode requires the presence of locally cached data files for the specified target user. These files must be located inside the `demo/` directory of this repository. This mode is specifically designed for testing the inference engine without relying on external network requests or facing potential API rate limits. In demo mode the username must exactly match (case-sensitively) the filename of the cached data (e.g., `demo/profile_Charles_Leclerc.json` for `--target Charles_Leclerc`).
 
 ---
 

@@ -225,9 +225,18 @@ python src/00_meta_classifier.py
 
 ### Step 1: Run Detection on Demo Accounts
 
+Install Playwright browsers:
+
 ```bash
-python src/bot_detector.py
+playwright install
 ```
+Run the bot detector in demo mode:
+
+```bash
+python src/bot_detector.py --mode demo --target Charles_Leclerc
+```
+
+**Note:** The username is case-sensitive and must match how it is saved in the demo folder (only in demo mode).
 
 **Process:**
 1. Loads all preprocessed models:
