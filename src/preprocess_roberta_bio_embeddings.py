@@ -181,6 +181,7 @@ def save_embeddings(embeddings: np.ndarray, labels: np.ndarray, user_ids: List[s
     print("\nSaving embeddings...")
     output_path = os.path.join(OUTPUT_DIR, output_filename)
     
+    # Save as PyTorch file for easy loading
     data = {
         'embeddings': torch.from_numpy(embeddings).float(),
         'labels': torch.from_numpy(labels).long(),
@@ -193,7 +194,8 @@ def save_embeddings(embeddings: np.ndarray, labels: np.ndarray, user_ids: List[s
     print(f"Saved formatted data to {output_path}")
 
 def main():
-    # easier than function
+
+    # Ensure output directory exists
     Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
     
     label_map, split_map = load_labels_and_splits()

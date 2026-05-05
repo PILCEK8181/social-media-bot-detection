@@ -65,14 +65,14 @@ print("=" * 70)
 def load_and_prepare_iat_data():
     print("\nLoading data...")
     
-    # labels and splits
+    # Labels and splits
     df_labels = pd.read_csv(os.path.join(DATA_DIR, 'label.csv'))
     df_split = pd.read_csv(os.path.join(DATA_DIR, 'split.csv'))
     
     label_map = {str(row['id']).replace('u', ''): (1 if row['label'] == 'bot' else 0) for _, row in df_labels.iterrows()}
     split_map = {str(row['id']).replace('u', ''): row['split'] for _, row in df_split.iterrows()}
     
-    # account creation times
+    # Account creation times
     print("  Loading account creation times...")
     user_creation = {}
     with open(os.path.join(DATA_DIR, 'user.json'), 'r', encoding='utf-8') as f:
@@ -83,17 +83,17 @@ def load_and_prepare_iat_data():
             if uid in label_map and created_at:
                 user_creation[uid] = pd.to_datetime(created_at, format='mixed', utc=True)
 
-    # tweet times
+    # Tweet times
     print("  Loading tweet timestamps...")
     df_tweets = pd.read_csv(os.path.join(TEMP_DIR, 'processed_timestamps.csv'))
     df_tweets['user_id'] = df_tweets['user_id'].astype(str)
     df_tweets['timestamp'] = pd.to_datetime(df_tweets['timestamp'], format='mixed', utc=True)
     
-    # group tweets by user
+    # Group tweets by user
     grouped = df_tweets.groupby('user_id')['timestamp'].apply(list).to_dict()
     del df_tweets
     
-    # calc IAT sequences
+    # Calculate IAT sequences
     print("  Calculating IATs...")
     all_user_ids = list(label_map.keys())
     
@@ -138,16 +138,19 @@ def load_and_prepare_iat_data():
     val_mask = np.array([s == 'val' for s in splits])
     test_mask = np.array([s == 'test' for s in splits])
     
-    # Z-score normalize using training set statistics
+    # Z-score normalization using training set statistics
     train_vals = []
+    # Collect all IAT values from the training set for normalization
     for i in np.where(train_mask)[0]:
         if lengths[i] > 1 or X[i, 0] != 0:
             train_vals.append(X[i, :lengths[i]])
     train_vals = np.concatenate(train_vals) if train_vals else np.array([0.0])
     
+    # Calculate mean and std from training IAT values
     iat_mean = train_vals.mean()
     iat_std = train_vals.std() + 1e-8
     
+    # Normalize all IAT values using training set statistics
     for i in range(len(X)):
         if lengths[i] > 0:
             X[i, :lengths[i]] = (X[i, :lengths[i]] - iat_mean) / iat_std
@@ -156,6 +159,7 @@ def load_and_prepare_iat_data():
     lengths_tensor = torch.tensor(lengths)
     y_tensor = torch.tensor(y)
     
+    # Create dataloaders
     train_loader = DataLoader(
         TensorDataset(X_tensor[train_mask], lengths_tensor[train_mask], y_tensor[train_mask]),
         batch_size=BATCH_SIZE, shuffle=True)
@@ -166,7 +170,7 @@ def load_and_prepare_iat_data():
         TensorDataset(X_tensor[test_mask], lengths_tensor[test_mask], y_tensor[test_mask]),
         batch_size=BATCH_SIZE, shuffle=False)
     
-    # class weights
+    # Class weights
     num_bots = y[train_mask].sum()
     num_humans = len(y[train_mask]) - num_bots
     pos_weight = torch.tensor([num_humans / (num_bots + 1e-5)]).to(DEVICE)
@@ -208,6 +212,7 @@ class IAT_LSTM_Model(nn.Module):
             nn.Linear(64, 1)
         )
     
+    # Forward pass with attention mechanism
     def forward(self, x, lengths):
         lengths_clamped = lengths.clamp(min=1).cpu()
         packed = pack_padded_sequence(x, lengths_clamped, batch_first=True, enforce_sorted=False)
@@ -243,7 +248,7 @@ def train_epoch(model, loader, optimizer, criterion, device):
         total_loss += loss.item()
     return total_loss / len(loader)
 
-
+# Evaluation function
 def evaluate(model, loader, criterion, device):
     model.eval()
     total_loss = 0
@@ -329,7 +334,7 @@ def main():
     
     print(f"Training completed. Best F1: {best_f1:.4f}")
     
-    # evaluate
+    # Evaluate
     test_loss, test_acc, test_f1, test_preds, test_labels = evaluate(model, test_loader, criterion, DEVICE)
     
     print("\n" + "=" * 70)
@@ -348,7 +353,7 @@ def main():
     print(f"\nConfusion Matrix:")
     print(confusion_matrix(test_labels, test_preds))
     
-    # save model
+    # Save model
     model_path = os.path.join(MODELS_DIR, '02_lstm.pth')
     torch.save(model.state_dict(), model_path)
     print(f"\nModel saved to {model_path}")
@@ -375,7 +380,7 @@ def main():
         pd.DataFrame({'user_id': test_uids, 'prob_lstm': test_probs, 'split': 'test', 'label': y_labels[test_mask]})
     ])
     df_preds.to_csv(os.path.join(TEMP_DIR, 'predictions/preds_lstm.csv'), index=False)
-    print("  Saved to predictions/preds_lstm.csv")
+    print("Saved to predictions/preds_lstm.csv")
 
     save_metrics(
         filename=os.path.basename(__file__),

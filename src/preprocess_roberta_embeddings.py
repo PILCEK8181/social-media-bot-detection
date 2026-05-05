@@ -36,7 +36,7 @@ from datetime import datetime
 
 from transformers import RobertaTokenizer, RobertaModel
 
-# COnfig
+# Config
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 BATCH_SIZE = 256  # Based on GPU memory, can be adjusted
 
@@ -231,7 +231,7 @@ def preprocess_embeddings(user_tweets: Dict[str, List[str]],label_map: Dict[str,
     all_splits = []
     
     users_processed = 0
-    users_skipped = 0
+    #users_skipped = 0
     
     # Process each user
     for user_id in tqdm(label_map.keys(), desc="Generating embeddings"):

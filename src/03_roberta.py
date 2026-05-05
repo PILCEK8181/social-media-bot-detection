@@ -42,7 +42,8 @@ BATCH_SIZE = 128
 EPOCHS = 50
 LEARNING_RATE = 1e-4  # Optimizer learning rate
 
-SEED = random.randint(1, 10000)  # Generate a random seed for reproducibility
+# Set random seed
+SEED = random.randint(1, 10000) 
 random.seed(SEED)
 np.random.seed(SEED)
 torch.manual_seed(SEED)
@@ -88,7 +89,7 @@ def align_embeddings(tweet_emb, tweet_ids, tweet_labels, tweet_splits,
 
     print("\nAligning embeddings...")
     
-    # convert to sets for quick intersection
+    # Convert to sets for quick intersection
     tweet_set = set(tweet_ids)
     bio_set = set(bio_ids)
     common_ids = tweet_set & bio_set
@@ -97,11 +98,11 @@ def align_embeddings(tweet_emb, tweet_ids, tweet_labels, tweet_splits,
     print(f"  Bio users: {len(bio_set)}")
     print(f"  Common users: {len(common_ids)}")
     
-    # mapping
+    # Create mapping from user_id to index for both sets
     tweet_id_to_idx = {uid: idx for idx, uid in enumerate(tweet_ids)}
     bio_id_to_idx = {uid: idx for idx, uid in enumerate(bio_ids)}
     
-    # get indexes, labels, splits for common users
+    # Get indexes, labels, splits for common users
     tweet_indices = []
     bio_indices = []
     alignment_labels = []
@@ -124,11 +125,11 @@ def align_embeddings(tweet_emb, tweet_ids, tweet_labels, tweet_splits,
     tweet_indices = torch.tensor(tweet_indices)
     bio_indices = torch.tensor(bio_indices)
     
-    # alligned embeddings
+    # Aligned embeddings
     aligned_tweet_emb = tweet_emb[tweet_indices]
     aligned_bio_emb = bio_emb[bio_indices]
     
-    # concat
+    # Concatenate tweet and bio embeddings
     combined_emb = torch.cat([aligned_tweet_emb, aligned_bio_emb], dim=1)
     
     print(f"Aligned embeddings shape: {combined_emb.shape}")
@@ -168,7 +169,7 @@ def create_dataloaders(embeddings, labels, splits, batch_size=BATCH_SIZE):
     
     return train_loader, val_loader, test_loader
 
-# Classifcation model definition
+# Classification model definition
 class BotDetectionModel(nn.Module):
     
     def __init__(self, input_dim: int):
@@ -200,7 +201,6 @@ class BotDetectionModel(nn.Module):
         x = self.output(x)
         return x
 
-
 def train_epoch(model, loader, optimizer, criterion, device):
     model.train()
     total_loss = 0
@@ -219,7 +219,7 @@ def train_epoch(model, loader, optimizer, criterion, device):
     
     return total_loss / len(loader)
 
-
+# Evaluation function
 def evaluate(model, loader, criterion, device):
     model.eval()
     total_loss = 0
@@ -247,7 +247,7 @@ def evaluate(model, loader, criterion, device):
     
     return total_loss / len(loader), accuracy, f1, all_preds, all_labels
 
-
+# Main function
 def train_model(model, train_loader, val_loader, device, epochs=EPOCHS, lr=LEARNING_RATE):
 
     print("\nTraining model...")
@@ -260,6 +260,7 @@ def train_model(model, train_loader, val_loader, device, epochs=EPOCHS, lr=LEARN
     best_f1 = 0
     best_model_state = None
     
+    # Training loop
     for epoch in range(epochs):
         train_loss = train_epoch(model, train_loader, optimizer, criterion, device)
         val_loss, val_acc, val_f1, _, _ = evaluate(model, val_loader, criterion, device)
@@ -269,13 +270,13 @@ def train_model(model, train_loader, val_loader, device, epochs=EPOCHS, lr=LEARN
         if val_f1 > best_f1:
             best_f1 = val_f1
             best_epoch = epoch 
-            # best_model_state = model.state_dict().copy() # should fix the issues
+            # Save the best model state (move to CPU to save GPU memory)
             best_model_state = {k: v.cpu() for k, v in model.state_dict().items()}
         
         if (epoch + 1) % 2 == 0:
             print(f"  Epoch {epoch+1}/{epochs} - Train Loss: {train_loss:.4f}, Val Loss: {val_loss:.4f}, Val F1: {val_f1:.4f}")
     
-    # load the best model state
+    # Load the best model state
     if best_model_state:
         model.load_state_dict(best_model_state)
     
@@ -289,20 +290,20 @@ def main():
     print("=" * 70)
     print(f"Timestamp: {datetime.now().isoformat()}")
     
-    # setup directories
+    # Ensure models directory exists
     Path(MODELS_DIR).mkdir(parents=True, exist_ok=True)
     
-    # load embeddings
+    # Load embeddings
     (tweet_emb, tweet_ids, tweet_labels, tweet_splits,
      bio_emb, bio_ids, bio_labels, bio_splits) = load_embeddings()
     
-    # align embeddings
+    # Align embeddings
     combined_emb, labels, splits, user_ids = align_embeddings(
         tweet_emb, tweet_ids, tweet_labels, tweet_splits,
         bio_emb, bio_ids, bio_labels, bio_splits
     )
     
-    # dataloaders
+    # Create dataloaders
     train_loader, val_loader, test_loader = create_dataloaders(combined_emb, labels, splits)
     
 
@@ -331,6 +332,7 @@ def main():
     print("\nDetailed Classification Report:")
     print(classification_report(test_labels, test_preds, target_names=['Human', 'Bot']))
     
+    # Confusion Matrix 
     print("\nConfusion Matrix:")
     cm = confusion_matrix(test_labels, test_preds)
     print(cm)
@@ -347,6 +349,7 @@ def main():
         'test_f1': test_f1,
         'timestamp': datetime.now().isoformat()
     }, model_path)
+    
     print(f"\nModel saved to {model_path}")
     
     print("\n" + "=" * 70)
@@ -354,7 +357,7 @@ def main():
 
     # PROBABILITIES FOR ENSEMBLE
     print("\nExtracting Probabilities for Ensemble...")
-    # get ids for val and test
+    # Get ids for val and test
     val_indices = np.where(np.array(splits) == 'val')[0]
     test_indices = np.where(np.array(splits) == 'test')[0]
     val_uids = [user_ids[i] for i in val_indices]
@@ -366,7 +369,7 @@ def main():
         with torch.no_grad():
             for emb, _ in loader:
                 logits = model(emb.to(DEVICE))
-                # softmax for positive class (bot)
+                # Softmax for positive class (bot)
                 p = torch.softmax(logits, dim=1)[:, 1].cpu().numpy()
                 probs.extend(p)
         return probs
