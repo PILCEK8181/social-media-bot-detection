@@ -22,7 +22,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, matthews_corrcoef, confusion_matrix, roc_curve
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, matthews_corrcoef, confusion_matrix
 from utils.save_metrics import save_metrics
 import random
 
@@ -47,7 +47,6 @@ def main():
     print("Seed:", SEED)
     print("Loading prediction files...")
 
-    
     # --- 01 RF ----
     df_rf = pd.read_csv(os.path.join(TEMP_DIR, 'predictions/preds_rf.csv'))
     
@@ -59,13 +58,12 @@ def main():
     # df_rob = pd.read_csv(os.path.join(TEMP_DIR, 'predictions/preds_roberta.csv'))
     df_rob = pd.read_csv(os.path.join(TEMP_DIR, 'predictions/preds_roberta_oversample.csv'))
 
-    
     # convert user_id to str and remove 'u' prefix to ensure proper merging
     df_rob['user_id'] = df_rob['user_id'].astype(str).str.replace('u', '', regex=False)
     df_rf['user_id'] = df_rf['user_id'].astype(str).str.replace('u', '', regex=False)
     df_lstm['user_id'] = df_lstm['user_id'].astype(str).str.replace('u', '', regex=False)
 
-    # merge trough user_id
+    # Merge through user_id
     df = df_rob.merge(df_lstm[['user_id', 'prob_lstm']], on='user_id')
     df = df.merge(df_rf[['user_id', 'prob_rf']], on='user_id')
     
@@ -74,8 +72,8 @@ def main():
     df_test = df[df['split'] == 'test']
     
     # FINAL FEATURES going into Meta-Classifier
-    # use only RF and Roberta probabilities as features for the meta-classifier, since LSTM performed poorly and may add noise
-    # its possible to change those features or include LSTM : features = ['prob_rf', 'prob_lstm', 'prob_roberta']
+    # uses only RF and Roberta probabilities as features for the meta-classifier, since LSTM performed poorly and may add noise
+    # its possible to change those features to include LSTM : features = ['prob_rf', 'prob_lstm', 'prob_roberta']
     features = ['prob_rf', 'prob_roberta']
     
     X_val = df_val[features]
@@ -84,8 +82,8 @@ def main():
     X_test = df_test[features]
     y_test = df_test['label']
     
-    print(f"  Training Meta-Classifier on {len(X_val)} validation samples...")
-    print(f"  Evaluating on {len(X_test)} test samples...")
+    print(f"Training Meta-Classifier on {len(X_val)} validation samples...")
+    print(f"Evaluating on {len(X_test)} test samples...")
     
     # Train Logistic Regression as Meta-Classifier
     meta_model = LogisticRegression(class_weight=None, random_state=SEED)
@@ -94,7 +92,8 @@ def main():
     # Final predictions on the test set
     preds = meta_model.predict(X_test)
     
-    # Final evaluation
+    # ---- Final evaluation ----
+    
     print("\n" + "=" * 70)
     print("FINAL ENSEMBLE RESULTS (Test Set)")
     print("=" * 70)
@@ -119,9 +118,8 @@ def main():
     joblib.dump(meta_model, model_path)
     print(f"\nMeta-Model saved successfully to {model_path}")
 
-    # weight importance visualization
-    weights = meta_model.coef_[0]
-    
+    # weight importance visualization plot
+    weights = meta_model.coef_[0] 
     plt.figure(figsize=(8, 5))
     sns.barplot(x=features, y=weights, palette='viridis')
     plt.title('LR weights for Meta-Classifier Features')

@@ -149,7 +149,7 @@ def detect_bot(username: str) -> Dict:
     print("Extracting Random Forest features...")
     rf_features = extract_rf_features(profile_data)
     
-    # Load Models & Predict
+    # Load Models and Predict
     print("Loading RF model and predicting...")
     
     if not os.path.exists(RF_MODEL_PATH):

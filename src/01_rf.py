@@ -29,7 +29,6 @@ from pathlib import Path
 from datetime import datetime
 
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import (accuracy_score, precision_score, recall_score, 
                              f1_score, matthews_corrcoef,confusion_matrix)
 
@@ -52,7 +51,6 @@ SEED = random.randint(1, 10000)
 random.seed(SEED)
 np.random.seed(SEED)
 
-print(f"Device: CPU")
 print(f"Seed: {SEED}")
 print("=" * 70)
 
@@ -283,6 +281,7 @@ def save_model(model, path):
     print(f"Model saved to: {path}")
 
 
+# ---- Evaluation and visualization (optional)----
 def plot_results(test_metrics, valid_metrics, train_metrics, feature_cols_final, 
                  rf_model, y_test, y_test_pred, y_test_proba):
     print("\nGenerating plots...")

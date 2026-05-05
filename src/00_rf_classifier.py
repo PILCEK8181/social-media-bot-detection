@@ -18,7 +18,6 @@ Description:
 
 import os
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.ensemble import RandomForestClassifier
@@ -34,6 +33,7 @@ RESULTS_DIR = './results'
 SEED = random.randint(1, 10000)
 
 def main():
+    
     print("=" * 70)
     print("Final Meta-Classifier (Random Forest Stacking)")
     print("=" * 70)
@@ -49,16 +49,16 @@ def main():
 
     #---- 03 Roberta ----
     #df_rob = pd.read_csv(os.path.join(TEMP_DIR, 'predictions/preds_roberta_weighted.csv'))
-    # df_rob = pd.read_csv(os.path.join(TEMP_DIR, 'predictions/preds_roberta.csv'))
+    #df_rob = pd.read_csv(os.path.join(TEMP_DIR, 'predictions/preds_roberta.csv'))
     df_rob = pd.read_csv(os.path.join(TEMP_DIR, 'predictions/preds_roberta_oversample.csv'))
 
     
-    # conver user_id to str and remove 'u' prefix to ensure proper merging
+    # convert user_id to str and remove 'u' prefix to ensure proper merging
     df_rob['user_id'] = df_rob['user_id'].astype(str).str.replace('u', '', regex=False)
     df_rf['user_id'] = df_rf['user_id'].astype(str).str.replace('u', '', regex=False)
     df_lstm['user_id'] = df_lstm['user_id'].astype(str).str.replace('u', '', regex=False)
 
-    # merge trough user_id
+    # merge through user_id
     df = df_rob.merge(df_lstm[['user_id', 'prob_lstm']], on='user_id')
     df = df.merge(df_rf[['user_id', 'prob_rf']], on='user_id')
     
@@ -67,7 +67,7 @@ def main():
     df_test = df[df['split'] == 'test']
     
     # FINAL FEATURES going into Meta-Classifier
-    # use only RF and Roberta probabilities as features for the meta-classifier, since LSTM performed poorly and may add noise
+    # uses only RF and Roberta probabilities as features for the meta-classifier, since LSTM performed poorly and may add noise
     # its possible to change those features or include LSTM : features = ['prob_rf', 'prob_lstm', 'prob_roberta']
     features = ['prob_rf', 'prob_roberta']
     
@@ -77,8 +77,8 @@ def main():
     X_test = df_test[features]
     y_test = df_test['label']
     
-    print(f"  Training Meta-Classifier on {len(X_val)} validation samples...")
-    print(f"  Evaluating on {len(X_test)} test samples...")
+    print(f"Training Meta-Classifier on {len(X_val)} validation samples...")
+    print(f"Evaluating on {len(X_test)} test samples...")
     
     # Train Random Forest as Meta-Classifier
     meta_model = RandomForestClassifier(class_weight='balanced', random_state=SEED)
@@ -87,7 +87,7 @@ def main():
     # Final predictions on the test set
     preds = meta_model.predict(X_test)
     
-    # evaluation
+    # Evaluation
     print("\n" + "=" * 70)
     print("FINAL ENSEMBLE RESULTS (Test Set)")
     print("=" * 70)
@@ -108,12 +108,12 @@ def main():
         print(f"  {name:15}: {importance:.4f}")
     
 
-    # save model for live mode usage
+    # Save model for live mode usage
     model_path = os.path.join(MODELS_DIR, 'meta_classifier_rf.pkl')
     joblib.dump(meta_model, model_path)
     print(f"\nMeta-Model saved successfully to {model_path}")
 
-    # feature importance visualization
+    # Feature importance visualization
     importances = meta_model.feature_importances_
     
     plt.figure(figsize=(8, 5))

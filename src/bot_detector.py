@@ -374,7 +374,6 @@ def save_results(results: Dict, username: str):
     with open(output_file, 'w') as f:
         json.dump(results, f, indent=2)
     
-    #print(f"[INFO] Result saved to {os.path.basename(output_file)}")
     return output_file
 
 
@@ -388,7 +387,7 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog='''
 EXAMPLES:
-  %(prog)s --target Charles_leclerc
+  %(prog)s --target Charles_Leclerc
   %(prog)s --target Cristiano --mode live --threshold 0.7
   %(prog)s --target NASA --threshold 0.7 --verbose
         ''')
@@ -404,7 +403,7 @@ EXAMPLES:
     
     args = parser.parse_args()
     
-    # Clean up username (remove @ if present)
+    # Clean up username (remove @ if present(just in case)) 
     username = args.target.lstrip('@')
     
     # Set up data directory for live mode
@@ -426,7 +425,7 @@ EXAMPLES:
         print(f"\n[ERROR] {str(e)}")
         sys.exit(1)
     finally:
-        # Clean up temporary directory if it was created for live mode (so it doesnt violate the "no data storage" requirement)
+        # Clean up temporary directory if it was created for live mode (so it doesn't violate the "no data storage" requirement)
         if temp_dir and os.path.exists(temp_dir):
             shutil.rmtree(temp_dir)
             if args.verbose:

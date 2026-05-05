@@ -10,6 +10,7 @@ Description:
     Standalone bot detection using only the RoBERTa content branch.
     Uses 768-dim embeddings from tweets and user bios for classification.
     Useful for testing individual model components and content-based detection.
+    Does not have live mode like the main bot_detector.py
 
 USAGE:
     python detect_roberta.py <username>

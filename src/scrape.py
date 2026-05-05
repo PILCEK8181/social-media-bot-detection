@@ -34,7 +34,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent
 DEMO_DIR = PROJECT_ROOT / 'demo'
 
-# CONFIG, set your own tokens here, checkout ../doc/scraper.md for details
+# CONFIG, set your own tokens here, check ../doc/scraper.md for details
 AUTH_TOKEN = "XXX"
 CT0_TOKEN = "XXX"
 
@@ -44,7 +44,7 @@ captured_tweets = []
 current_profile_data = {} 
 CURRENT_TARGET = "" 
 
-# template 
+# Template 
 def reset_profile_data():
     global current_profile_data
     current_profile_data = {
@@ -61,7 +61,7 @@ def reset_profile_data():
         "verified": False,
     }
 
-# tweets 
+# Tweets 
 def extract_tweets_recursive(obj):
     if isinstance(obj, dict):
         if 'full_text' in obj and 'created_at' in obj:
@@ -78,7 +78,7 @@ def extract_tweets_recursive(obj):
         for item in obj:
             extract_tweets_recursive(item)
 
-# profile data
+# Profile metadata
 def extract_profile_aggregate(obj):
     global current_profile_data
     if isinstance(obj, dict):
@@ -109,6 +109,7 @@ def extract_profile_aggregate(obj):
         for item in obj:
             extract_profile_aggregate(item)
 
+# Response handler for Playwright to capture network responses and extract data
 def handle_response(response):
     url = response.url
     if "graphql" in url and response.request.method == "GET":
@@ -119,13 +120,13 @@ def handle_response(response):
                 extract_profile_aggregate(data) 
                 
             elif "UserTweets" in url:
-                print(f"Intercepted timeline data, getting tweets...")
+                print("Intercepted timeline data, getting tweets...")
                 data = response.json()
                 extract_tweets_recursive(data)
         except Exception as e:
             pass 
 
-#Scrape a list of accounts and save results to output_dir
+# Scrape a list of accounts and save results to output_dir
 def _scrape_accounts(accounts, output_dir):
     global CURRENT_TARGET
     
@@ -143,6 +144,7 @@ def _scrape_accounts(accounts, output_dir):
             viewport={"width": 1280, "height": 720}
         )
         
+        # Add auth cookies to the browser context for authenticated access
         context.add_cookies([
             {"name": "auth_token", "value": AUTH_TOKEN, "domain": ".x.com", "path": "/"},
             {"name": "ct0", "value": CT0_TOKEN, "domain": ".x.com", "path": "/"},
@@ -219,7 +221,7 @@ def _scrape_accounts(accounts, output_dir):
         browser.close()
 
 
-#Scrape a single user's profile and tweets. Called by detectors in live mode.
+# Scrape a single user's profile and tweets. Called by detectors in live mode.
 def scrape_user(username, output_dir=None):
     # Use project demo directory by default
     if output_dir is None:
@@ -241,7 +243,7 @@ def scrape_user(username, output_dir=None):
     
     print(f"[LIVE] Scraping complete for @{username}.")
 
-# batch scrape for all target accounts, saves to project demo folder
+# Batch scrape for all target accounts, saves to project demo folder
 def run_scraper():
     _scrape_accounts(TARGET_ACCOUNTS, str(DEMO_DIR))
 
