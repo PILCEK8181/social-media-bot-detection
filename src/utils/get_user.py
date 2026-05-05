@@ -7,8 +7,8 @@ Type: Bachelor's Thesis 2026
 Topic: Detection of Fake Accounts on Social Media Networks
 
 Description:
-    Utility module for extracting and retrieving user profile data from the TwiBot-22
-    dataset.
+    Utility script for extracting a sample of user data from the TwiBot-22 dataset.
+    Allows for random user selection or specific user ID retrieval.
 """
 
 import os
