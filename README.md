@@ -225,11 +225,6 @@ python src/00_meta_classifier.py
 
 #### Run Detection on Demo Accounts
 
-Install Playwright browsers:
-
-```bash
-playwright install
-```
 Run the bot detector in demo mode:
 
 ```bash
@@ -276,6 +271,18 @@ Example output structure:
   "tweets": 2406,
   "verified": true
 }
+```
+#### Live Mode
+
+Install Playwright browsers:
+
+```bash
+playwright install
+```
+Run in live mode:
+
+```bash
+python src/bot_detector.py --mode live --target Charles_Leclerc
 ```
 
 
