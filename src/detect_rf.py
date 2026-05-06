@@ -25,6 +25,8 @@ import json
 import joblib
 import argparse
 import warnings
+import tempfile
+import shutil
 import numpy as np
 import pandas as pd
 from pathlib import Path
@@ -58,9 +60,12 @@ Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
 # Data Loading & Preprocessing
 # ============================================================================
 
-def load_profile_data(username: str) -> Dict:
+def load_profile_data(username: str, data_dir: str = None) -> Dict:
     
-    profile_path = os.path.join(DEMO_DIR, f'profile_{username}.json')
+    if data_dir is None:
+        data_dir = DEMO_DIR
+        
+    profile_path = os.path.join(data_dir, f'profile_{username}.json')
     
     if not os.path.exists(profile_path):
         raise FileNotFoundError(f"Data file not found:\n  - {profile_path}")
@@ -137,12 +142,12 @@ def predict_rf(rf_model, features: Dict) -> float:
 # Main Pipeline
 # ============================================================================
 
-def detect_bot(username: str) -> Dict:
+def detect_bot(username: str, data_dir: str = None) -> Dict:
     print(f"\n{'='*70}\nBOT DETECTION (RF ONLY) FOR USER: @{username}\n{'='*70}")
     
     # Load Data
     print("\nLoading profile data...")
-    profile_data = load_profile_data(username)
+    profile_data = load_profile_data(username, data_dir=data_dir)
     print(f"  User: {profile_data['display_name']} (@{username}) | Followers: {profile_data['followers_count']:,}")
     
     # Extract Features
@@ -189,17 +194,28 @@ def main():
                         help='demo = use existing data in ./demo, live = scrape fresh data first')
     args = parser.parse_args()
     
+    temp_dir = None
+    data_dir = DEMO_DIR
+    
     try:
         if args.mode == 'live':
             from scrape import scrape_user
-            scrape_user(args.username, output_dir=DEMO_DIR)
+            temp_dir = tempfile.mkdtemp(prefix='rf_only_live_')
+            print(f"[INFO] Using temporary directory: {temp_dir}")
+            
+            scrape_user(args.username, output_dir=temp_dir)
+            data_dir = temp_dir
         
-        results = detect_bot(args.username)
+        results = detect_bot(args.username, data_dir=data_dir)
         results['mode'] = args.mode
         save_results(results, args.username)
     except Exception as e:
         print(f"\nFatal error: {str(e)}")
         sys.exit(1)
+    finally:
+        if temp_dir and os.path.exists(temp_dir):
+            shutil.rmtree(temp_dir)
+            print(f"[DEBUG] Cleaned up temporary directory: {temp_dir}")
 
 if __name__ == '__main__':
     main()
